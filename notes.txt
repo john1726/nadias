@@ -1,0 +1,232 @@
+Building Laravel and Vue.js Web Apps (see https://www.lynda.com/Laravel-tutorials/Building-Laravel-Vue-js-Web-Apps):
+
+Description:
+Vue.js ships with Laravel, the hugely popular PHP web framework. But using this front-end framework along with Laravel to build full-stack web applications comes with its own set of challenges. In this project-based course, instructor Michael Sullivan steps through how to work with Vue.js and Laravel to create elegant, real-world apps. As he shows how to build a content management tool for a restaurant menu, Michael demonstrates how to scaffold an authentication system, build an embedded SPA with Vue Router, manage state complexity using Vuex, and more.
+
+Topics include:
+-Configuring a virtual machine
+-Using webpack and Laravel Mix
+-Managing file uploads
+-Protecting routes and models with policies
+-Building an API with Laravel Passport
+-Building an embedded SPA with Vue Router
+-Protecting admin pages with gates
+-Displaying model validation errors
+-Managing state complexity using Vuex
+
+Building Laravel and Vue.js Web Apps: Module 0: Introduction: Laravel and Vue.js--Achieving full-stack elegance:
+-Vue.js is now the default javascript library that comes wiith Laravel
+
+Building Laravel and Vue.js Web Apps: Module 0: Introduction: What you should know:
+-This course is not an introduction to PHP so you should be comfortable with that
+-MVC architecture
+-This course is not an introduction to Vue.js so you should have experience with Vue.js already (see instructor`s course "Learning Vue.js" to get up to speed)
+
+Software and Tooling (optional):
+-Node.js
+-Visual Studio Code
+-Vue.js devtools extension (Chrome or Firefox)
+-Vagrant and VirtualBox (or other virtualization provider)
+-Git
+
+Building Laravel and Vue.js Web Apps: Module 0: Introduction: Demo Project Overview:
+-Nadia`s garden website
+
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Installing Homestead:
+-https://laravel.com
+-Homestead is a virtual machine that comes pre-packaged with everything you need to build websites with laravel and vue.js
+-Homestead is a Vagrant box
+-Vagrant alone can`t handle everything--we also need a virtualization provider such as VirtualBox, VMWare or AWS to actually run the virtual machine
+-Also the instructor will be using PowerShell and he suggests running the shell as administrator as well as your IDE 
+-This is the command to add the homestead box to Vagrant (see https://laravel.com/docs/6.x/homestead) but please note that you may need to choose the VM provider:
+
+    $ vagrant box add laravel/homestead
+    ==> box: Loading metadata for box 'laravel/homestead'
+        box: URL: https://vagrantcloud.com/laravel/homestead
+    ==> box: Adding box 'laravel/homestead' (v9.2.2-alpha1) for provider: virtualbox
+        box: Downloading: https://vagrantcloud.com/laravel/boxes/homestead/versions/9.2.2-alpha1/providers/virtualbox.box
+        box: Download redirected to host: vagrantcloud-files-production.s3.amazonaws.com
+        box:
+        box: Calculating and comparing box checksum...
+    ==> box: Successfully added box 'laravel/homestead' (v9.2.2-alpha1) for 'virtualbox'!
+
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Configuring and booting the virtual machine:
+-We need to clone the repository on github because it has scripts we need to configure and boot the VM
+
+    $ git clone https://github.com/laravel/homestead.git ~/Homestead
+
+-Now let us checkout the latest stable version which you can copy from the github page:
+
+    https://github.com/laravel/homestead/releases
+
+v10.1.0
+
+    $ cd ~/Homestead
+    $ git checkout v10.1.0
+
+-Now let us configure homstead where you can see these files:
+
+init.bat
+init.sh
+
+    $ sh init.sh
+    Homestead initialized!
+
+Now you will see:
+
+Homestead.yaml
+
+-Now let us view the file using
+
+    $ code Homestead.yaml
+
+-Open a terminal in Visual Studio Code using:
+
+    <CTRL> - `
+
+-Make a directory for nadiasgarden restaurant
+
+PS C:\Users\msull> mkdir nadias
+
+-We are doing this now so that we can tell vagrant to sync the files in this directory with a directory inside the VM
+-This lets us edit the code inside the host machine and run that code inside the guest VM
+-See Homestead.yaml and edit:
+
+folders:
+    - map: ~/code
+      to: /home/vagrant/code
+
+To:
+
+folders:
+    - map: ~/nadias
+      to: /home/vagrant/code
+
+-Let us edit the domain from:
+
+sites:
+    - map: homestead.test
+      to: /home/vagrant/code/public
+
+To:
+
+sites:
+    - map: dev.nadias
+      to: /home/vagrant/nadias/public
+
+-Change database name from:
+
+databases:
+    - homestead
+
+To:
+
+databases:
+    - nadias
+
+-Now we need to make sure that the domain name we chose is mapped to the local ip address for the box:
+
+ip: "192.168.10.10"
+
+We do this by editing our hosts file (on linux it is at /etc/hosts):
+
+C:\Windows\System32\drivers\etc\hosts
+
+Now add:
+
+192.168.10.10 dev.nadias
+
+-Back in the yaml file we will need to be able to connect to the machine using ssh
+
+keys:
+    - ~/.ssh/id_rsa
+
+-If you comment out the above section vagrant will create and manage the keys for you:
+
+#keys:
+#    - ~/.ssh/id_rsa
+
+-Now if we cd to ~/Homestead we are ready to boot the machine with:
+
+    $ vagrant up
+    ...
+    $ vagrant ssh
+    Welcome to Ubuntu 18.04.3 LTS (GNU/Linux 4.15.0-72-generic x86_64)
+    ....
+
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Scaffolding an authentication system:
+-Now inside the vm we can just do:
+
+    vagrant@homestead:~$ laravel new nadias --force
+    Crafting application...
+    Loading composer repositories with package information
+    Installing dependencies (including require-dev) from lock file
+        1/76:       https://codeload.github.com/sebastianbergmann/code-unit-reverse-lookup/legacy.zip/4419fcdb5eabb9caa61a27c7a1db532a6b55dd18
+    ...
+    
+-Now we should already be able to navigate to the dev.nadias and see the default laravel website
+
+    http://dev.nadias/
+
+-Now in Visual Studio Code choose File -> "Add Folder to Workspace" and choose "nadias"
+-Most of the code is under app but let`s take a look under routes where we will see web.php
+
+<?php
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+-This opens welcome.blade.ph
+-Now to add a user authentication framework, inside vagrant just cd to ~/nadias and type "artisan make:auth"
+
+-> NOTE: In laravel 6 you need INSTEAD to use these commands:
+
+    $ composer require laravel/ui --dev
+    ...
+    $ php artisan ui vue --auth
+    ...
+    $ npm install
+    ....
+    $ npm run dev
+    ...
+
+-Now that we have installed auth we can now see this has been aded to web.php:
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+-We also have new views under:
+
+~resources\views\auth
+
+-We still don`t have a users table in our database, and it is still using Homestead so we want instead for it to use nadias so let`s fix that
+-Under config in database.php it us checking DB_DATABASE to find the database and then using forge if it can`t find the database
+
+        'mysql' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+-Let us change it in our .env file
+
+APP_NAME="Nadia's Garden Restaurant"
+APP_URL=http://dev.nadias
+DB_DATABASE=nadias

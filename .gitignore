@@ -1,0 +1,62 @@
+# OS-specific
+.DS_Store
+
+# Editor swapfiles
+.*.sw?
+*~
+
+# Vagrant stuff
+acceptance_config.yml
+boxes/*
+/.vagrant
+/website/.vagrant
+/website/build
+/vagrant-spec.config.rb
+test/vagrant-spec/.vagrant/
+
+# app.js
+/iws-site/public/js/app.js
+
+# VS Editor 
+iws-site/.vs
+
+# Bundler/Rubygems
+*.gem
+.bundle
+pkg/*
+tags
+/Gemfile.lock
+test/tmp/
+/exec
+.ruby-bundle
+
+# Documentation
+_site/*
+.yardoc/
+doc/
+
+# Python
+*.pyc
+
+# Rubinius
+*.rbc
+
+# IDE junk
+.idea/*
+*.iml
+.project
+
+# Ruby Managers
+.rbenv
+.rbenv-gemsets
+.ruby-gemset
+.ruby-version
+.rvmrc
+
+# Box storage for spec
+test/vagrant-spec/boxes/*.box
+
+ubuntu-bionic-18.04-cloudimg-console.log
+.cache
+npm-debug.log.*
+
