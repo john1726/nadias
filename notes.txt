@@ -230,3 +230,110 @@ Route::get('/home', 'HomeController@index')->name('home');
 APP_NAME="Nadia's Garden Restaurant"
 APP_URL=http://dev.nadias
 DB_DATABASE=nadias
+
+-Now add admin column to users table in the migration:
+
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->boolean('is_admin')->default(false);
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+-Now run migration using:
+
+    $ php artisan migrate
+
+vagrant@homestead:~/nadias$ artisan migrate
+
+   Illuminate\Database\QueryException  : SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO) (SQL: select * from information_schema.tables where table_schema = nadias and table_name = migrations and table_type = 'BASE TABLE')
+
+  at /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connection.php:669
+    665|         // If an exception occurs when attempting to run a query, we'll format the error
+    666|         // message to include the bindings with SQL, which will make this exception a
+    667|         // lot more helpful to the developer instead of just the database's errors.
+    668|         catch (Exception $e) {
+  > 669|             throw new QueryException(
+    670|                 $query, $this->prepareBindings($bindings), $e
+    671|             );
+    672|         }
+    673|
+
+  Exception trace:
+
+  1   PDOException::("SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO)")
+      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+
+  2   PDO::__construct()
+      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+
+  Please use the argument -v to see more details.
+vagrant@homestead:~/nadias$
+    
+-----
+-Instead using sql server where last command from bootstrap.sh is:
+
+sudo apt-get install -y mssql-server=14.0.3192.2-2
+
+-----
+
+   Illuminate\Database\QueryException  : SQLSTATE[01002] Adaptive Server connection failed (127.0.0.1:3306) (severity 9) (SQL: select * from sysobjects where type = 'U' and name = migrations)
+
+  at /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connection.php:669
+    665|         // If an exception occurs when attempting to run a query, we'll format the error
+    666|         // message to include the bindings with SQL, which will make this exception a
+    667|         // lot more helpful to the developer instead of just the database's errors.
+    668|         catch (Exception $e) {
+  > 669|             throw new QueryException(
+    670|                 $query, $this->prepareBindings($bindings), $e
+    671|             );
+    672|         }
+    673|
+
+  Exception trace:
+
+  1   PDOException::("SQLSTATE[01002] Adaptive Server connection failed (127.0.0.1:3306) (severity 9)")
+      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+
+  2   PDO::__construct()
+      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+
+  Please use the argument -v to see more details.
+vagrant@homestead:~/nadias$ cd nadias
+
+-----
+
+vagrant@homestead:~/nadias$ php artisan migrate
+
+   Illuminate\Database\QueryException  : SQLSTATE[HY000] unrecognized msgno (127.0.0.1:1433) (severity 11) (SQL: select * from sysobjects where type = 'U' and name = migrations)
+
+  at /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connection.php:669
+    665|         // If an exception occurs when attempting to run a query, we'll format the error
+    666|         // message to include the bindings with SQL, which will make this exception a
+    667|         // lot more helpful to the developer instead of just the database's errors.
+    668|         catch (Exception $e) {
+  > 669|             throw new QueryException(
+    670|                 $query, $this->prepareBindings($bindings), $e
+    671|             );
+    672|         }
+    673|
+
+  Exception trace:
+
+  1   PDOException::("SQLSTATE[HY000] unrecognized msgno (127.0.0.1:1433) (severity 11)")
+      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+
+  2   PDO::__construct()
+      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+
+  Please use the argument -v to see more details.
+vagrant@homestead:~/nadias$
+
+
