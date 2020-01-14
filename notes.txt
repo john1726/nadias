@@ -202,7 +202,20 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 ~resources\views\auth
 
--We still don`t have a users table in our database, and it is still using Homestead so we want instead for it to use nadias so let`s fix that
+-Now refresh the homepage at http://dev.nadias/ and click "Register" in the top RHS, and fill out the form:
+
+Roger
+roger@example.com
+nadias123
+
+And click Register
+
+-We will get an error because we still don`t have a users table in our database, and it is still using Homestead for the database name so we want instead for it to use nadias so let`s fix that
+
+Illuminate\Database\QueryException
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'nadias.users' doesn`t exist (SQL: select count(*) as aggregate from `users` where `email` = roger@example.com)
+http://dev.nadias/register
+
 -Under config in database.php it us checking DB_DATABASE to find the database and then using forge if it can`t find the database
 
         'mysql' => [
@@ -225,6 +238,7 @@ Route::get('/home', 'HomeController@index')->name('home');
             ]) : [],
         ],
 
+-The above is using the environment variable DB_DATABASE to get the database name and using forge if it can`t find the environment variable
 -Let us change it in our .env file
 
 APP_NAME="Nadia's Garden Restaurant"
@@ -249,91 +263,12 @@ DB_DATABASE=nadias
 
 -Now run migration using:
 
-    $ php artisan migrate
+    vagrant@homestead:~/nadias$ ./artisan migrate
 
-vagrant@homestead:~/nadias$ artisan migrate
+-Now go back and try to create a user again
+-We should be able to login and logout at this point
+-In the next video we will talk about email verification and forgotten passwords
 
-   Illuminate\Database\QueryException  : SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO) (SQL: select * from information_schema.tables where table_schema = nadias and table_name = migrations and table_type = 'BASE TABLE')
 
-  at /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connection.php:669
-    665|         // If an exception occurs when attempting to run a query, we'll format the error
-    666|         // message to include the bindings with SQL, which will make this exception a
-    667|         // lot more helpful to the developer instead of just the database's errors.
-    668|         catch (Exception $e) {
-  > 669|             throw new QueryException(
-    670|                 $query, $this->prepareBindings($bindings), $e
-    671|             );
-    672|         }
-    673|
-
-  Exception trace:
-
-  1   PDOException::("SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO)")
-      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
-
-  2   PDO::__construct()
-      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
-
-  Please use the argument -v to see more details.
-vagrant@homestead:~/nadias$
-    
------
--Instead using sql server where last command from bootstrap.sh is:
-
-sudo apt-get install -y mssql-server=14.0.3192.2-2
-
------
-
-   Illuminate\Database\QueryException  : SQLSTATE[01002] Adaptive Server connection failed (127.0.0.1:3306) (severity 9) (SQL: select * from sysobjects where type = 'U' and name = migrations)
-
-  at /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connection.php:669
-    665|         // If an exception occurs when attempting to run a query, we'll format the error
-    666|         // message to include the bindings with SQL, which will make this exception a
-    667|         // lot more helpful to the developer instead of just the database's errors.
-    668|         catch (Exception $e) {
-  > 669|             throw new QueryException(
-    670|                 $query, $this->prepareBindings($bindings), $e
-    671|             );
-    672|         }
-    673|
-
-  Exception trace:
-
-  1   PDOException::("SQLSTATE[01002] Adaptive Server connection failed (127.0.0.1:3306) (severity 9)")
-      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
-
-  2   PDO::__construct()
-      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
-
-  Please use the argument -v to see more details.
-vagrant@homestead:~/nadias$ cd nadias
-
------
-
-vagrant@homestead:~/nadias$ php artisan migrate
-
-   Illuminate\Database\QueryException  : SQLSTATE[HY000] unrecognized msgno (127.0.0.1:1433) (severity 11) (SQL: select * from sysobjects where type = 'U' and name = migrations)
-
-  at /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connection.php:669
-    665|         // If an exception occurs when attempting to run a query, we'll format the error
-    666|         // message to include the bindings with SQL, which will make this exception a
-    667|         // lot more helpful to the developer instead of just the database's errors.
-    668|         catch (Exception $e) {
-  > 669|             throw new QueryException(
-    670|                 $query, $this->prepareBindings($bindings), $e
-    671|             );
-    672|         }
-    673|
-
-  Exception trace:
-
-  1   PDOException::("SQLSTATE[HY000] unrecognized msgno (127.0.0.1:1433) (severity 11)")
-      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
-
-  2   PDO::__construct()
-      /home/vagrant/nadias/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
-
-  Please use the argument -v to see more details.
-vagrant@homestead:~/nadias$
 
 
