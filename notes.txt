@@ -1341,3 +1341,143 @@ Vue.component('category-manager', require('./components/CategoryManager.vue').de
 -Next we will add a button to save categories and build out our upsert method in our controller so that we will have a full working category manager
 
 Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Calling an API from Vue:
+-See ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_09\begin\nadias_html
+-First let us inject the incoming request:
+
+    public function upsert(Request $request)
+    {
+        $this->authorize('manage', 'App\Category');
+        $categories = $request->post('categories');
+        foreach ($categories as $cat) {
+            if ($cat['id']) {
+                Category::where('id', $cat['id'])->update($cat);
+            }
+            else {
+                Category::create($cat);
+            }
+        }
+        return ['success' => true, 'categories' => Category::all()];
+    }
+
+    
+-We will talk more about validation later
+-Let us add this to the Category model:
+
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    protected $guarded = [];
+}
+
+-Now let us go back to CategoryManager.vue:
+
+<template>
+    <form @submit.prevent="saveCategories">    
+        <a @click="addCategory" class="add">+ Add Category</a>    
+        <div v-for="(category, index) in categories" :key="category.id">
+            <input type="text" v-model="category.name" :ref="category.name">
+            <input type="number" v-model="category.display_order">
+            <a @click="removeCategory(index)" class="remove">delete</a>
+            <div>
+                <img v-if="category.image" :src="`/images/${category.image}`" width="100">
+                <label v-else>Image: </label>
+                <input type="text" v-model.lazy="category.image">
+            </div>
+            <hr>
+        </div>
+        <button type="submit">Save</button>
+        <div>{{ feedback }}</div>
+    </form>
+</template>
+
+<script>
+    export default {
+        props: ['initialCategories'],
+        data() {
+            return {
+                categories: _.cloneDeep(this.initialCategories),
+                feedback: ''
+            };
+        },
+        methods: {
+            removeCategory(index) {
+                if (confirm('Are you sure?')) {
+                    let id = this.categories[index].id;
+                    if (id > 0) {
+                        axios.delete('/api/categories/' + id);
+                    }
+                    this.categories.splice(index, 1);
+                }
+            },
+            addCategory() {
+                this.categories.push({
+                    id: 0,
+                    name: '',
+                    image: '',
+                    display_order: this.categories.length + 1
+                });
+                this.$nextTick(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                    this.$refs[''][0].focus();
+                });
+            },
+            saveCategories() {
+                axios.post('/api/categories/upsert', {
+                    categories: this.categories
+                })
+                .then((res) => {
+                    if (res.data.success) {
+                        this.feedback = 'Changes saved.';
+                        this.categories = res.data.categories;
+                    }
+                });
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    hr {
+        margin-bottom: 30px;
+    }
+    img {
+        vertical-align: middle;
+    }
+</style>
+
+-Now let us test this by adding the desserts category for real
+
+Desserts
+brownie.jpg
+
+-Let us also get delete working and then we will be done
+
+Route::delete('/categories/{category}', 'CategoryController@destroy');
+
+    public function destroy(Category $category)
+    {
+        $this->authorize('delete', $category);
+        $category->delete();
+        return ['success' => true];
+    }
+
+
+Now in CategoryManager.vue let us finish removeCategory:
+
+        methods: {
+            removeCategory(index) {
+                if (confirm('Are you sure?')) {
+                    let id = this.categories[index].id;
+                    if (id > 0) {
+                        axios.delete('/api/categories/' + id);
+                    }
+                    this.categories.splice(index, 1);
+                }
+            },
+    
+Building Laravel and Vue.js Web Apps: Module 3: Building an Embedded SPA: Protecting admin pages with gates:

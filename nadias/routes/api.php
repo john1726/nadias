@@ -14,3 +14,5 @@ use Illuminate\Http\Request;
 */
 
 Route::post('/categories/upsert', 'CategoryController@upsert');
+
+Route::delete('/categories/{category}', 'CategoryController@destroy');

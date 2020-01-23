@@ -291,4 +291,19 @@ In that case, we can just do splice, without calling the API. But if it is an al
 
 Let's go back to the home page again, and it's really gone. In the next chapter, we'll integrate this component into a larger component for managing the entire menu, using client-side routing with Vue router.
 
+Building Laravel and Vue.js Web Apps: Module 3: Building an Embedded SPA: Protecting admin pages with gates:
+- [Instructor] In this video we'll add a place holder page and component for the full menu editor and then protect it with an authorization gate. So let's add a route for new admin page in web.php. This will be available at menu-editor and this is going to use a menu action on a new admin controller that we'll create in a second. We can create that admin controller with artisan if we go over to our homestead shell. So do artisan make controller, we'll call it admin controller and it's not for any particular resource so we'll just create it as an empty controller.
+
+And we'll look at that in a moment. But first, since we're not dealing with a resource now, we'll use a gate instead of a policy to restrict access to the new menu editor page. So in auth service provider, in the boot method, we can define a new gate with gate define. We'll call it edit menu and this will use a closure that takes the current user.
+
+And once again we can just grant or deny access by testing the value of is admin for that user. This time instead of authorizing in the controller which you can do, but it looks a little different when using gates. I want to demonstrate a variation where we do it with middleware on the route itself. So using the can middleware we can do can edit menu like that and you can also use the can middleware with policies as well.
+
+Now let's create the menu method in the controller. So go over to the admin controller that we just created, we'll create the menu method, but we'll just leave it empty for now. Now if I go over to the browser and try to navigate to menu-editor, I see nothing which is what I would expect when logged in as an admin. But if we were to change this gate to only allow non-admins by adding a negation operator there, I should get a 403.
+
+When I'm not returning a vue, I'm not going to have that browser sync code injected so I will have to manually refresh now. But once I do that we've confirmed that this is all working. So let's remove that because we do want only admins and then in the method this is going to return a new vue that we'll create in the admin folder and it will be menu-editor. So let's create that in resources vues admin, menu-editor.blade.php and again I'm just going to copy these blade directives to save a little time.
+
+We'll change this title segment to menu editor and we'll remove this stuff that's related to categories and this time we'll just have a single vue component in the content section. So menu-editor, so a very lean blade vue here. Now let's create that component in resources js components. Menu editor.vue and in the template we'll just add a root div and for now we'll just have a single level one heading that says menu editor just to see if we can get this to show up.
+
+Of course we need to register this component either as a global component like category manager or we could make it a local component that's local to this vue instance. Let's just copy this and register it as a global component. So menu-editor and then menu editor.vue and if I'm still running webpac that should all be recompiled and ready to go. And now when I navigate to menu-editor as long as I'm longed in as an admin I can see the place holder page and component which will be turning into a full menu editor and we'll start doing that using vue router in the next video.
+
 
