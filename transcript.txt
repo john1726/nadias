@@ -190,5 +190,59 @@ The nice thing here is that all we need to do is put our PHP variable categories
 
 In the next video, we'll start building out the UI for the basic CRUD functionality.
 
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building a CRUD component:
+- [Instructor] Now we'll start turning this view component into a form for managing the category records. We'll want to be able to add to, edit, or delete the categories in this prop, but it's a bad practice to mutate props, since our changes can easily be overwritten by a parent component. Here we don't have a parent component, but we will later on, and even if that parent component won't be updating the data, we'll be better off if we don't get in the habit of breaking this rule. So first, let's give this component its own data.
+
+We'll change the prop name to initial categories, both in the component and in the blade view, and in an html template, I want to use Kebab case like that. Then, we'll just initialize a data property called categories with this dot initial categories as its default value, but because a raise in objects are passed by reference in Javascript, this won't prevent us from mutating the prop at all, since categories is now just a reference to the same initial categories array.
+
+So to really avoid mutating the prop, we'll clone it. Lodash is already available in the global scope, so we can use the Lodash clone deep method underscore dot clone deep to clone the array and recursively clone each category object in the array. Now up in the template, let's change our root element to a form and inside the loop, we'll create input elements for each attribute.
+
+So first, we'll have a couple of basic fields for name and display order. In these we'll use two way binding with v model, so for name we'll have category dot name and then for display order, we'll make type a number, and v model will be category dot display order. We'll follow those fields with a link to delete the category, so at click sets up an event handler.
+
+This is going to call the remove category method which we'll set up in a moment, and we'll pass it the index of the category to remove in the array. I'm also going to add class remove just to give it a little bit of styling, and the link we'll say delete. But, if we want to use this index which isn't defined, we need to add it to the v for like this, category index in parens.
+
+Next, we'll open up a new section and we'll show the image using an image tag with a dynamic source attribute. I'm going to use an ES six string template here since we need slash images before category dot image, also add a width of 100 to constrain it a bit just so it doesn't blow up the page. We will be looking at file uploading later on, but I don't want to get bogged down with that right now, so, we're just going to provide a text field for setting the image file name.
+
+And we'll assume that anything that's entered there will already be available in our public images directory. We'll also add a horizontal rule at the end to help separate the categories visually. Now down in the script section, we'll add a methods object, and the remove category method will be simple for now. It will take the index of the category to remove from the array, and we will add an API to talk to our Laravel back end soon, but for now, we'll just use a confirm dialogue, we'll say, are you sure, and then we'll just remove one element from the array using the splice method at that index.
+
+Remember, we can also add a style tag in a view component. So here, I'm just going to be setting the alignment for the image and the elements around it, and also adding a margin below the horizontal rule. And since these are really simple selectors, I'll probably want to add the scoped attribute to make sure that these rules only apply to this component. So now if we look in the browser, we have a form for updating categories and we can remove one, or at least remove it from our view data, if not from the database just yet.
+
+In the next video, we'll add the ability to create a new category, and look at some issues that come up with the UI and UX there.
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Managing scrolling and focus:
+- Continuing from where we left off, let's make sure that we have a way to add a new category now. We'll do that with a link at the top that invokes the add category method. And class equals add is just going to add some basic styling that's defined in our SAS file. For the link text, we'll just do plus and then add category. So, down in methods now, all that this add category method needs to do is push a placeholder object onto the array.
+
+So we'll do this dot categories dot push and then this ID of zero, later on, this will indicate to our laravel backend that we need to store this as a new category. Name and image will be empty strings but display order can default to one more than the current number of categories. Since the placeholder won't have an image yet, let's only display this image tag if category dot image isn't empty.
+
+Otherwise, we'll put a label here with v-else so that the user knows what's expected. So, now if I look at the browser, clicking the add category link does create a blank category at the bottom, but it would be nice if it could automatically scroll to the bottom and also focus the cursor on the name field. So in addCategory, we can use some vanilla javascript for the scrolling. Just window dot scrollTo with zero as the X coordinate and the body scroll height as the Y coordinate.
+
+But we'll want to give the dom time to update and insert the new div before we scroll so we can wrap this in a callback to nextTick like this. For focusing the cursor, that's a bit more complicated. On the name field, we can add a dynamic ref so that we can access the dom element using the category name.
+
+For a new category, the ref name will just be an empty string. But when a ref is created inside a V-for like this one is, it's always an array, even if there's only one element with that ref name. So we'll access it with this dot dollar sign refs, the ref with empty string as its name, which is an array and then the first item at index zero. And then we can call focus.
+
+This is one thing that's much easier in jQuery. But normally you shouldn't need to access the dom directly and focus is just a special case where we can't bind the focus to our view model in any simple or straightforward way. We're not connected to the backend for adding categories yet but let's test adding that missing desserts category just in the front end. So now I have my scrolling and focusing on the name field. We'll add desserts. 4 is the display order I want and I know we have brownie dot jpg in the public images folder.
+
+So, it's nice that the image appears right away but that was a little messy with those intermediate states before we finished typing. To fix that, we can use the lazy modifier on v-model for the category image so that we're syncing after the change event instead of after the input event on every keystroke. So now if I try that again, I have to tab away from this field before you see the image. Which is a little cleaner.
+
+Before we build this admin out too much, it's a good idea to think about protecting this page from access by non-admin users, which we`ll talk about next.
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Protecting routes and models with policies:
+- [Instructor] For permissions that need to go beyond simply requiring authentication or email verification, we can create what are known in Laraval as policies. In this video, I'll create a policy for actions on the category model, and we can do that with Artisan of course. So artisan make:policy. We'll give it a name like CategoryPolicy, and then using the model option, we can specify the model class name for the model that we want to define these permissions for.
+
+So now we can open that up in app policies, category policy, and we can add logic for all of these different actions, and return either true or false for the current user to indicate whether or not they're allowed to perform the given operation. By itself, this won't have any effect because it will need to add code that checks this policy in a controller, or a route, or even in a Blade template. For our purposes, all we really care about is whether or not the user is an admin, but it's nice to have all these methods ready to go if we want to get more granular with our permissions later on.
+
+So, for example, if we're checking the view action, we could just return whether or not the user is an admin, and we could do that in each method, or we could add a before method that will cause this to be checked regardless of the permission we're authorizing. So this is going to take a user and an ability that corresponds to one of the method names below, and this time we don't just want to return whether or not the user is an admin because if they're not an admin, we don't want to do anything yet.
+
+We want to let it check in the normal way, but if they are an admin, we're going to return true, and that means that, for an admin, all the permissions defined in this policy will automatically resolve to true, and the other empty methods will resolve to false by default for non-admins. And we don't have a page for viewing a single category, so I might change this one to manage to be used as a check for access to the category admin page.
+
+We also don't really care about checking any specific instances of category to authorize somebody to look at that page and to manage the categories. So this is going to be determined whether the user can manage categories. Before we can use this logic, we need to register the policy in AuthServiceProvider in the app provider's folder. So that one there is just there as an example, so we can copy that, and say that whenever we check a permission for an operation on a category model, we'll be using this policy that we just created.
+
+Now let's see if we can prevent the user from accessing our category manager page, and then when we make them an admin, we'll verify that they can see it, sort of like a red-green test. So now, in our category controller, in the index method, we can just call this authorize, passing the action name, which is going to be manage, followed by an instance of a model, or in this case, just the model's class name.
+
+So now when I look at the browser again, I'm not authorized to view this page anymore. Now, I want to make sure I'm logged in here, and I am, but go head and log in if you're not logged in. Otherwise, these methods will just return false by default. And notice, back in the policy, if I just return true here, now it's going to let me in, but we only want to let admins in so let's remove that, and let's make my user an admin.
+
+So let's get back to the homestead shell, and for this, we can use artisan tinker to query the database and update records on the command line. So I happened to know that I'm logged in as the user with ID one, so I can do that, and just set is_admin to true now, and remember to call user save. We actually do need to manually refresh this time because changes in the console aren't going to trigger a browser-sync refresh, but when I refresh, I can see I'm again authorized since I'm an admin.
+
+In the next video, we'll build an API for category actions which will allow us to finish the category manager component.
 
 
