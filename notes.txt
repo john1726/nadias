@@ -448,7 +448,7 @@ mix.js('resources/js/app.js', 'public/js')
 -Before we can get webpack running we need to install some front-end dependencies.  We usually want npm to do that on our host machine.
 -Now on the host do an install (open a terminal in Visual Studio Code by typing <CTRL>-<SHIFT>-`):
 
-PS C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\nadias> npm install
+PS ~Lynda\BuildingLaravelVueJsWebApps\nadias> npm install
 npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.11 (node_modules\fsevents):
 npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.11: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
 
@@ -459,7 +459,7 @@ added 1040 packages from 491 contributors and audited 17228 packages in 61.637s
 
 found 0 vulnerabilities
 
-PS C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\nadias> npm run watch-poll
+PS ~Lynda\BuildingLaravelVueJsWebApps\nadias> npm run watch-poll
 
 -Now go back to web page and type <CTRL>-F5 to do a hard refresh
 -So you should now see on the home page:
@@ -571,9 +571,9 @@ Route::get('/', function () {
 
 -Now add this folder to the Visual Studio Code workspace:
 
-C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html
+~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html
 
--Let us open C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html\index.html and copy the title:
+-Let us open ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html\index.html and copy the title:
 
 Nadia`s Garden Restaurant
 
@@ -975,7 +975,7 @@ Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building a CR
 @endsection
 
 Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Managing scrolling and focus:
-C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_06\begin\nadias_html
+~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_06\begin\nadias_html
 -Now let us make sure that we have a way to add a category now
 
 <template>
@@ -1067,7 +1067,7 @@ It would be nice if we could automatically scroll to the bottom and put the curs
                 <input type="text" v-model.lazy="category.image">
                     
 Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Protecting routes and models with policies:
--See C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_07\begin\nadias_html
+-See ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_07\begin\nadias_html
 -For permissions that need to be beyond simply authentication we can create what is known in Laravel as policies:
 
 vagrant@homestead:~/nadias$ ./artisan make:policy CategoryPolicy --model=Category
@@ -1191,5 +1191,153 @@ class CategoryPolicy
 		]);
     }
 
-        
+-Let us make our user an admin by using artisan tinker:
 
+vagrant@homestead:~/nadias$ ./artisan tinker
+Psy Shell v0.9.12 (PHP 7.4.1 — cli) by Justin Hileman
+>>> $user = User::find(2);
+[!] Aliasing 'User' to 'App\User' for this Tinker session.
+=> App\User {#3037
+     id: 2,
+     name: "Roger",
+     email: "rmoore@example.com",
+     email_verified_at: "2020-01-14 18:09:43",
+     is_admin: 0,
+     created_at: "2020-01-14 18:08:46",
+     updated_at: "2020-01-14 18:09:43",
+   }
+>>> $user->is_admin = true;
+=> true
+>>> $user->save();
+=> true
+>>>
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building an API with Laravel Passport:
+-See ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_07\begin\nadias_html
+-For actions that will invoke AJAX we could put the routes in web.php and rely on the same cookie-based sessions for authentication but it is nice to keep them in the api.php file that is in the same routes folder
+-This api guard uses token authentication:
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+-We can setup a complete API using Laravel passport:
+
+vagrant@homestead:~/nadias$ composer require laravel/passport
+...
+
+-Passport comes with migrations although they won`t be placed in the normal migrations folder
+-Now run artisan migrate to store the tokens for the API access
+
+vagrant@homestead:~/nadias$ ./artisan migrate
+Migrating: 2016_06_01_000001_create_oauth_auth_codes_table
+Migrated:  2016_06_01_000001_create_oauth_auth_codes_table (0.18 seconds)
+Migrating: 2016_06_01_000002_create_oauth_access_tokens_table
+Migrated:  2016_06_01_000002_create_oauth_access_tokens_table (0.2 seconds)
+Migrating: 2016_06_01_000003_create_oauth_refresh_tokens_table
+Migrated:  2016_06_01_000003_create_oauth_refresh_tokens_table (0.22 seconds)
+Migrating: 2016_06_01_000004_create_oauth_clients_table
+Migrated:  2016_06_01_000004_create_oauth_clients_table (0.11 seconds)
+Migrating: 2016_06_01_000005_create_oauth_personal_access_clients_table
+Migrated:  2016_06_01_000005_create_oauth_personal_access_clients_table (0.12 seconds)
+
+-To get everything else we need use:
+
+vagrant@homestead:~/nadias$ ./artisan passport:install
+
+-Next in our User.php model we will need to add the HasApiTokens along with associated use declaration:
+
+    use Notifiable, HasApiTokens;
+
+-Now we need to add a fresh API token class which can can do in http\Kernel by adding "\Laravel\Passport\Http\Middleware\CreateFreshApiToken::class":
+
+    protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class
+        ],
+
+-Now we need to change the driver for the API guard in auth.php:
+
+Change from:
+
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+
+To:
+
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+
+-Now in api.php let us change to a route for storing our categories:
+
+Route::post('/categories/upsert', 'CategoryController@upsert');
+
+Also add 'auth:api' to Kernel.php:
+
+        'api' => [
+            'throttle:60,1',
+            'bindings',
+            'auth:api'
+        ],
+
+-Now let us go to the category controller:
+
+
+    public function upsert()
+    {
+        $this->authorize('manage', 'App\Category');
+        return ['success' => true];
+    }
+
+-Now let us test this in CategoryManager.vue:
+
+        created() {
+            axios.post('/api/categories/upsert');
+        },
+
+-Now do a page refresh, open the developer tools in the browser and go to the Network tab and open the XRT sub-tab to view the AJAX calls.  You should see:
+
+Name    Status  Type  Initiator
+upsert  200     xhr   app.js:285
+
+The response body should be:
+
+{"success":true}
+
+-----
+        
+-Note that I am getting this error:
+
+[Vue warn]: Failed to mount component: template or render function not defined.
+
+found in
+
+---> <CategoryManager>
+       <Root>
+
+-> Solution: Had to change in app.js:
+
+Vue.component('category-manager', require('./components/CategoryManager.vue'));
+
+To:
+
+Vue.component('category-manager', require('./components/CategoryManager.vue').default);
+
+-----
+
+-Next we will add a button to save categories and build out our upsert method in our controller so that we will have a full working category manager
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Calling an API from Vue:

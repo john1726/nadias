@@ -245,4 +245,50 @@ So let's get back to the homestead shell, and for this, we can use artisan tinke
 
 In the next video, we'll build an API for category actions which will allow us to finish the category manager component.
 
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building an API with Laravel Passport:
+- [Instructor] In this video, we'll build an API with token authentication using Laravel Passport. For actions that will invoke with Ajax, we could put the routes here in web.php and rely on the same cookie-based sessions for authentication, but it's nice to keep them separate in this API routes file which is in the same folder. This API guard used here uses token authentication by default, and it's also nice to build a universal API with that token authentication in case you need it later, for instance, for a completely separate app, web or mobile, or for third party integrations with your system.
+
+We can setup an API without much effort at all using Laravel Passport which is a complete OAuth2 server and API authentication package. You can install it with composer. Just type composer require laravel\passport. Passport comes with migrations, although they won't be placed in the normal migrations folder. So next, we'll run artisan migrate to create the tables to store the API access tokens.
+
+To get everything else we need in order to generate the access tokens, we'll run artisan passport install now. Next, in our user model, we'll need to add the HasApiToken straight here and I wish I could tell you why it's not giving the IntelliSense suggestions right now because we do need to add a use declaration up here for Laravel\Passport\HasApiTokens.
+
+We'll also need to add the create fresh API token class to the web middleware groups and we can do that in http\kernel. So from my web middleware groups, this one is going to be \Laravel\Passport\Http\Middleware\ CreateFreshApiToken and we want the class name there. We're almost there, but now we need to change the driver for the API guard and we're going to find that in config/auth so if I go down to the guards here, I want to change the driver for API from token to passport now.
+
+Back in the API Routes, let's change this to a route that we'll use for storing our categories. This will be at /categories/upsert and any URLs in here are going to start with API implicitly. So when we call this from view, we're actually going to have to do API/categories/upsert. And then, instead of a closure here, let's forward this to a new method that will create in CategoryController and we'll call it upsert because we're either updating or inserting new categories on our page.
+
+Since we want every route in this file to use the API authentication, let's remove this middleware and we can just add it to the API middleware groups in kernel here. So just add auth:api here and then, one more thing, I want to change this to post here. And now, let's go to the category controller. We'll add the upsert method below index and let's copy this authorized line here to check for permissions with the manage action but for now, we'll just return an array where success is true.
+
+'cause I just want to see if we can get everything working together. The quickest way to test this to see if we set it up right is in our view component category manager, let's just call our API endpoint in a created hook. So this will be axios.post to /api/categories/upsert and that's all we'll put in this file for now and then, if I go over to the browser and open up the dev tools with F12, I want to look at the Network tab and XHR for Ajax requests and responses and if I refresh, I can see upsert with the status of 200 and if I click that, I can see the response body with that success true that we were looking for.
+
+Next, we'll add a button to save categories and build out the upsert method in our controller so that we'll have a full working category manager.
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Calling an API from Vue:
+- [Instructor] Before we start making calls to the API from our Vue component, we'll need to build out this upsert action in the Category controller a bit. First, let's inject the incoming request which we can do by just creating a parameter of type, Request. We're going to need this to update all existing categories and store any new categories. We'll just be posting our categories data property from the component, so we can store that for categories, and we can access that now with request, post, categories, like that.
+
+Then we'll loop through them, for each categories, and again, I'm going to use cat as a looping variable, and we can say, if the ID isn't empty, or isn't zero, then we can use the Category::where method to find the category that has that ID, and then we can call update, passing that cat array of keys and values that we want to update for that model.
+
+Otherwise, we can just call Category::create, passing the same array of keys and values. Since Vue needs to be made aware of the IDs of any newly created categories, so that they're submitted with those new IDs on subsequent requests, let's just return the latest collection of categories and we'll just get all of the latest from the database with Category::all. And then, in the Vue component, we can just update them all at once in the Vue model after saving.
+
+We're going to cheat a little bit on validation for now, but we'll talk more about it later, but in the category model, let's just add an empty guarded array, to indicate that we'll allow every property to be mass-assignable for those create and update methods. Otherwise, we would need to specify all the assignable properties individually, by setting the fillable attribute array. Let's get back to our Vue component now.
+
+We can remove the created hook here, and then let's finally add a submit button, which our form doesn't have yet, so button type, submit, and we'll just say Save, and underneath that, we're also going to add a feedback section. This is going to display the value of a new data property called feedback, which will just show a message whenever saving is complete, so let's add that in data along with categories.
+
+We'll initialize it to an empty string, and then we'll add a submit handler for the form, so @submit, and we'll use the prevent modifier to avoid the browser's default form submission behavior so that we can use Ajax instead inside this saveCategories method, which we can write now. So down here, let's add saveCategories.
+
+Again, we'll use axios.post() to api/categories/upsert, but this time, we'll send the categories data, which is just this.categories. This should return a promise, so in the callback, we can accept the response, and then we can check that success key, and that's not going to be in res, but in res.data when we're using Axios.
+
+So if that's true, we can set feedback to something like, changes saved, and now we also want to set categories to res.data.categories, and that's to make sure that we're synced with the database and we have the IDs of any newly inserted categories in our view data, because if you don't do that, and you've hit Save multiple times, you'll start getting duplicate categories being created.
+
+So let's test this now by adding the Desserts category for real, so Desserts, and remember, that was brownie.jpg, and I'm also going to change Salads to Salad so that I can test that update is working as well. So I see changes saved, and if I go up here and click the logo, I know it's really saved because now I see the Desserts category on the home page, and Salads was changed to Salad. Let's also get delete working, and then we'll be done with this component.
+
+So in our API routes, not the web routes, we're going to add a route that responds to the delete method, and that's going to be categories, slash, and then a parameter for the category. This will actually be an ID, but if I call it category instead of ID, we can use route model binding to have it automatically look up that category and pass it to the controller method, and that controller method is already set up for us.
+
+It's destroy, and that's already set up for us in the category controller that we created earlier in this chapter, and then, in the destroy method, let's go down to that in the category controller. We'll authorize the delete action and if you look in the category policy, this takes a specific instance of a category model. Again, an admin will always have permission to delete, but if we want to allow other users to delete later on, we might want to examine the category first, maybe to see who created it, and now we'll be able to add that logic easily.
+
+So then, since we already have the category injected, we'll just call delete, and we'll return success true. Now, back in our component, we need to finish the removeCategory method. If they're sure, let's grab the ID of the category at this index, so this.categories[index].id, and if ID, or we can say if ID is greater than zero, only then do we need to call the API and delete this, because we might add a blank category and then decide to delete it.
+
+In that case, we can just do splice, without calling the API. But if it is an already saved category, we want to do axios.delete, api/categories/, don't forget the slash, and then do plus ID. So sometimes those ES6 string templates are a little bit ugly there. In this case, I think it's easier to just do plus ID, and let's test that. Go back to our categories component, and if I delete that one that I just created, are you sure, okay.
+
+Let's go back to the home page again, and it's really gone. In the next chapter, we'll integrate this component into a larger component for managing the entire menu, using client-side routing with Vue router.
+
 
