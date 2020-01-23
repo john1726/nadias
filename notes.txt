@@ -833,22 +833,65 @@ vagrant@homestead:~/nadias$ composer require laravel/helpers
 -Next we will start building the admin UI for updating the dishes
 
 Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Injecting props in Vue components:
--
+-Add this to CategoryController.php:
 
+    public function index()
+    {
+        $categories = Category::orderBy('display_order')->get();
+        return view('admin.categories.index', [
+			'categories' => $categories
+		]);
+    }
 
+-Also add ~/resources/views/admin/categories/index.php.  The inject $categories below automatically JSON encodes categories to avoid any syntax issues.  It doesn`t get much easier for passing an array from PHP to JavaScript:
 
+@extends('layouts.app')
 
+@section('title', ' - Categories')
 
-    
+@section('content')
+    <h1>Categories</h1>
+    <category-manager :categories="{{ $categories }}"></category-manager>
+@endsection
 
+-Also let us add a route for Categories in web.php:
 
+Route::get('/categories', 'CategoryController@index');
 
+-Also add the "Auto Close Tag" VS Code extension
+-Now in ~resources/js/components let us create CategoryManager.vue:
 
+<template>
+    <div>
+        <div v-for="category in categories" :key="category.id">
+            {{ category.name }}
+        </div>
+    </div>
+</template>
 
+<script>
+    export default {
+        props: ['categories']
+    }
+</script>
 
+-Where does this categories array come from?  props
+-But first in app.js let us change the component to category manager:
 
+From:
 
+Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
+To:
+
+Vue.component('category-manager', require('./components/CategoryManager.vue'));
+
+-Make sure web-pack is still running in the terminal:
+
+       Asset      Size   Chunks             Chunk Names
+/css/app.css  4.51 KiB  /js/app  [emitted]  /js/app
+ + 1 hidden asset
+[Browsersync] File event [change] : public\css\app.css
 
 
 
