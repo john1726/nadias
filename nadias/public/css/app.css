@@ -2,7 +2,7 @@
 
 ver=1.0.0);body {
   color: #999;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-weight: 300;
   letter-spacing: 1px;
@@ -26,14 +26,17 @@ a:hover {
 .top-bar {
   border-bottom: 1px solid #ddd;
   display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
+      -ms-flex-direction: row;
           flex-direction: row;
   -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
           justify-content: space-between;
   color: #999;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   line-height: 1;
   text-transform: uppercase;
@@ -43,7 +46,7 @@ a:hover {
 
 .top-bar a {
   color: #218944;
-  font-family: "Old Standard TT", serif;
+  font-family: 'Old Standard TT', serif;
   font-size: 16px;
   font-style: italic;
   letter-spacing: 0;
@@ -63,23 +66,26 @@ nav {
 
 nav ul {
   display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
+      -ms-flex-direction: row;
           flex-direction: row;
-  justify-content: space-around;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
   margin: 12px 0;
   padding: 0;
 }
 
 nav li {
   display: inline;
-  font-family: "Old Standard TT", serif;
+  font-family: 'Old Standard TT', serif;
   font-size: 14px;
 }
 
 nav li.separator::before {
-  content: "|";
+  content: '|';
 }
 
 nav a {
@@ -96,7 +102,7 @@ img.home {
 }
 
 h4.intro {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   margin: 0 0 24px 0;
   text-align: center;
@@ -111,11 +117,14 @@ h4.intro {
   margin: 40px 0 0 0;
   border-top: 1px solid #ddd;
   display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
+      -ms-flex-direction: row;
           flex-direction: row;
   -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
 }
 
@@ -129,7 +138,7 @@ h4.intro {
 }
 
 .menu-categories h2 a {
-  font-family: "Old Standard TT", serif;
+  font-family: 'Old Standard TT', serif;
   font-weight: 400;
   font-size: 24px;
   margin-top: 0;
@@ -151,6 +160,7 @@ h4.intro {
 .social {
   border-top: solid 2px #ddd;
   display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   padding-bottom: 50px;
 }
@@ -158,11 +168,13 @@ h4.intro {
 .social div {
   padding-top: 30px;
   -webkit-box-flex: 1;
+      -ms-flex: 1;
           flex: 1;
 }
 
 .social div:first-child {
   -webkit-box-flex: 3;
+      -ms-flex: 3;
           flex: 3;
   border-right: solid 1px #ddd;
   padding-right: 30px;
@@ -170,7 +182,7 @@ h4.intro {
 
 .social h4 {
   margin-top: 0;
-  font-family: "Old Standard TT", serif;
+  font-family: 'Old Standard TT', serif;
   font-size: 16px;
   font-style: italic;
   font-weight: 400;
@@ -179,7 +191,7 @@ h4.intro {
 
 .social p {
   padding-left: 10px;
-  font-family: "Old Standard TT", serif;
+  font-family: 'Old Standard TT', serif;
   font-size: 14px;
   line-height: normal;
 }
@@ -197,7 +209,7 @@ footer {
 }
 
 h1 {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   margin: 0 0 24px 0;
   text-transform: uppercase;
@@ -213,11 +225,11 @@ input {
   padding: 5px;
 }
 
-input[type=file] {
+input[type="file"] {
   vertical-align: middle;
 }
 
-input[type=number] {
+input[type="number"] {
   width: 40px;
 }
 
@@ -241,6 +253,7 @@ a.remove {
   nav ul {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
+        -ms-flex-direction: column;
             flex-direction: column;
   }
 
