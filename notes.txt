@@ -618,6 +618,153 @@ And remove:
 @yield('content')
 
 -Now let us grab those authentication links and integrate them into the existing nadia`s nav bar
+...
+
+-Now if we check the browser we see our branded homepage we we can start adding some dynamic behaviour to it over the next few videos
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Creating a model and seeding the database:
+-Now let us change the app so that the category names and image file names are pulled from the database
+-Go to the nadias shell inside Visual Studio code
+
+$ artisan make:model Category -mr
+
+Full command:
+
+roger@MSI MINGW64 /c/Workspace/Resources/Courses/Lynda/BuildingLaravelVueJsWebApps/Homestead ((c6a5fdf...))
+$ vagrant ssh
+Welcome to Ubuntu 18.04.3 LTS (GNU/Linux 4.15.0-74-generic x86_64)
+
+
+1 package can be updated.
+0 updates are security updates.
+
+
+Last login: Thu Jan 23 17:53:45 2020 from 10.0.2.2
+vagrant@homestead:~$ cd nadias
+vagrant@homestead:~/nadias$ ./artisan make:model Category -mr
+Model created successfully.
+Created Migration: 2020_01_23_175454_create_categories_table
+
+-Now in the app folder we should have a Category.php file and a CategoryController.php
+-Also there will be a new migrations file in database/migrations
+
+-Let us add 'name' and 'image' columns to Category
+-Also let us add unsignedTinyInteger('display_order')
+
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateCategoriesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('image');
+            $table->unsignedTinyInteger('display_order');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('categories');
+    }
+}
+
+-Now run artisan migrate and seeder:
+
+vagrant@homestead:~/nadias$ ./artisan migrate
+...
+
+vagrant@homestead:~/nadias$ ./artisan make:seeder CategoriesTableSeeder
+
+-Which will create:
+
+<?php
+
+use Illuminate\Database\Seeder;
+
+class CategoriesTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('categories')->insert([
+            [
+                'name' => 'Starters',
+                'image' => 'mushrooms.jpg',
+                'display_order' => 1
+            ],
+            [
+                'name' => 'Salads',
+                'image' => 'salad.jpg',
+                'display_order' => 2
+            ],
+            [
+                'name' => 'Entrees',
+                'image' => 'burger.jpg',
+                'display_order' => 3
+            ],
+        ]);
+    }
+}
+
+-We will insert the desert category using our admin tool later
+-Now run the seeder:
+
+vagrant@homestead:~/nadias$ ./artisan db:seed
+
+-BTW you might need to run this first for it to resolve the Categories table if you get this error:
+
+   Illuminate\Contracts\Container\BindingResolutionException  : Target class [CategoriesTableSeeder] does not exist.
+
+vagrant@homestead:~/nadias$ composer dump-autoload
+
+-Now we can verify everything worked in MySQL:
+
+vagrant@homestead:~/nadias$ mysql nadias
+
+mysql> select * from categories;
++----+----------+---------------+---------------+------------+------------+
+| id | name     | image         | display_order | created_at | updated_at |
++----+----------+---------------+---------------+------------+------------+
+|  1 | Starters | mushrooms.jpg |             1 | NULL       | NULL       |
+|  2 | Salads   | salad.jpg     |             2 | NULL       | NULL       |
+|  3 | Entrees  | burger.jpg    |             3 | NULL       | NULL       |
++----+----------+---------------+---------------+------------+------------+
+3 rows in set (0.00 sec)
+
+mysql>
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: 
+
+
+    
+
+
+
+
+
+
 
 
 

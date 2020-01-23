@@ -131,3 +131,22 @@ Otherwise, the Logout link will appear, and that all looks fine now. Now, everyt
 
 And also, in our home view, let's add that title section that I mentioned before, and instead of ending the section, I can just put the content right in there, like that. So, let's grab that slogan from index.html, and we'll put that in there. Now, if we check the browser, we see our branded homepage, and we can start adding some dynamic behavior to it, over the next few videos.
 
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Creating a model and seeding the database:
+- [Instructor] The first thing we'll do with our new homepage is change this section so that the category names and image file names are pulled from the database. So, switch to your homestead shell if you're not there already, by using this dropdown. And we'll use artisan to create a model called category, so artisan make:model Category. And then, with the M and R options, we can also generate at the same time a migration for creating category table in the database and a resource controller with some basic CRUD actions.
+
+So, in my app folder now, I have this category model, and it doesn't need anything else for now except what's provided in the base model class. And in HTTP controllers, in my category controller, I won't use all of these methods, but it's nice to have this shell as a starting point. And then in database migrations, I have this new migration file. And here I'm going to add name and image columns for the category table.
+
+So these will be string or a VARCHAR in MySQL, and we're going to use the default settings for name and image for the image file name. I'll also add a display order column to control the order of the categories on the homepage and on the menu. So this can just be an unsignedTinyInteger, and we'll call it display_order, and that's perfectly appropriate for ordering a small number of items.
+
+And of course, time stamps will add those created-at and updated-at time stamp fields. So now we can run artisan migrate, and we should have a new categories table in our database. We're going to build an admin interface shortly to manage these categories, but for now, we'll use a seeder to get some test data in our new table. So, we can create a new seeder with artisan, artisan make:seeder, and we'll give our seeder class a name like CategoriesTableSeeder.
+
+Now, inside that file that's going to appear in the seeds folder under database, I can use the DB facade with the categories table and call the insert method passing an array of arrays that each correspond to a category model that I want to insert. So for my first category, the name was Starters, and for image, we can assume that this file already exists in the public images folder for now to keep things simple.
+
+Display order is going to be one, and we're not going to worry about created at and updated at for now, although those will be automatically taken care of when we're actually saving models in our app. So let's copy this a couple more times and just add two more categories for now. We'll do Salads, and we should have an image called salad.jpg. Display order will be two. And then Entrees, and if you remember, that one was a picture of a burger.
+
+Display order will be three. And we're going to leave out the desserts' category for now because we'll insert that using our admin tool later. To run this seeder, we could call artisan db:seed and give it the class name with the class option, or we can just run artisan db:seed if we add it to the database seeder. So, we could just uncomment this and change users to categories.
+
+And by the way, if you don't create the seeder with artisan, and you're just starting from the exercise files, you might need to run composer dump-autoload for it to be able to resolve the categories table class name. Otherwise, you should just be able to run artisan db:seed now. And then we can verify that everything looks good in MySQL. Select star from categories. And there they are.
+
+And in the next video, we'll display this data on the homepage.
+

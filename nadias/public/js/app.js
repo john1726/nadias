@@ -37336,7 +37336,7 @@ var staticRenderFns = [
     return _c("div", { staticClass: "container" }, [
       _c("div", { staticClass: "row justify-content-center" }, [
         _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card card-default" }, [
             _c("div", { staticClass: "card-header" }, [
               _vm._v("Example Component")
             ]),
