@@ -758,6 +758,84 @@ mysql>
 Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building views with Blade templates:
 -Now let us remove the should route here from web.php and we will want to use the home controller method
 
+Route::get('/', function () {
+    return view('home');
+});
+
+Also change:
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+To slash to serve right on the bare domain:
+
+Route::get('/', 'HomeController@index')->name('home');
+
+-Also remove the verified since we don`t care if viewers checking the home page are even verified
+-Remember to do a ctrl-shift-h to find and replace all '/home' with '/'
+-Now in HomeController remove the 'auth' middleware
+
+$this->middleware('auth');
+
+-Now in the index method let us grab all the categories:
+
+    public function index()
+    {
+        $categories = Category::orderBy('display_order')->get();
+        return view('home', compact('categories'));
+    }
+
+-Now let us go over to the home.blade.php view so that the categories are dynamic
+-Remove this:
+
+    <article>
+        <a href="#"><img src="/images/mushrooms.jpg"></a>
+        <h2><a href="#">Starters</a></h2>
+    </article>                
+    <article>
+        <a href="#"><img src="/images/salad.jpg"></a>
+        <h2><a href="#">Salads</a></h2>
+    </article>                
+    <article>
+        <a href="#"><img src="/images/burger.jpg"></a>
+        <h2><a href="#">Entrees</a></h2>
+    </article>                
+    <article>
+        <a href="#"><img src="/images/brownie.jpg"></a>
+        <h2><a href="#">Desserts</a></h2>
+    </article>
+
+-And replace with:
+
+    @foreach ($categories as $cat)
+        <article>
+            <a href="/menu#{{str_slug($cat->name)}}"><img src="/images/{{$cat->image}}"></a>
+            <h2><a href="/menu#{{str_slug($cat->name)}}">{{$cat->name}}</a></h2>
+        </article>   
+    @endforeach
+
+-str_slug changes spaces to hyphens, etc
+-Also add use for Category
+-There is an extension to help with this (CTRL-SHIF-X to open extensions in VS Code) and search for:
+
+    PHP Intelliphense
+
+-This will add use declaration if you type "Category":
+
+use App\Category;
+
+-Also do CTRL-, to edit the settings for PHP to disable basic suggestions so they don`t interfere
+->Uncheck "PHP Suggest:Basic"
+-Now we have our homepage with three of the four categories but loaded from the database
+-Note that str_slug is part of String and Array helpers which have been removed from the Core Framework in Laravel 6 so execute this command to add them:
+
+vagrant@homestead:~/nadias$ composer require laravel/helpers
+
+-Next we will start building the admin UI for updating the dishes
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Injecting props in Vue components:
+-
+
+
 
 
 

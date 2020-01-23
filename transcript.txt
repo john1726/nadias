@@ -171,4 +171,24 @@ You'll also want to do control comma to edit the settings for PHP and disable th
 
 And now we have our homepage with three out of our four categories, but loaded from the database. And in the next video, we'll start to build the admin UI for updating this data.
 
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Injecting props in Vue components:
+- [Instructor] In this video, we'll start to build out the Vue.js powered admin tool for updating the restaurant's menu. Because we'll always have a relatively small number of menu categories, and they have a simple set of attributes, we don't really need separate pages for listing, creating, and updating these category records. We'll do it all in a single page using Vue.js. So I'm going to start by copying the body of this method in the home controller into the index method of the category controller that we created.
+
+But this time instead of home, we'll return a new index view that we'll create inside a categories folder, inside an admin folder. We can actually create those new folders in the view all in one shot if we go to resources, view, New File. I can now do admin categories index.blade.php, and it will create that folder structure for me in the new blade file. And let's copy some of the blade directives from home to get us started.
+
+And we'll remove that slogan and just say Categories for the second part of the title. And of course, we're going to want to do endsection here. And for now, we'll just put a level one header that says categories. In our Web Routes file, I'm going to add a Route for /categories that responds to get requests. And those will just be forwarded to that method so Category/Controller@index, and we'll skip the name for now.
+
+We need to be able to do things like add a new category to the list inline or delete a category. And we'll do that all inside a Vue component called category manager. So this is actually all we'll need in our blade view. And by the way, if you don't get that auto closing tag in PHP files, try the Auto Close tag extension, the first one in the list right here, and that will also enable it for Vue files, which is nice.
+
+In resources, js, components, let's create CategoryManager.vue and we'll start with the template. We need to make sure we have a root element, like a div, and then we can put another div inside that and repeat it with a v-for directive to iterate over the categories. So we can do category in categories. And then for now, we'll just display the name.
+
+And remember the double curly braces here, that's vue string interpolation, not to be confused with the similar blade interpolation. We should also provide a unique key for each element to help Vue manage them more efficiently and id is fine for that here. But where does this categories array come from? Well, in the scripts section, where we export the component options, we can declare categories as a prop that will be provided to the component in the view.
+
+But first in app.js, let's just change example component to category manager to get that one registered quickly, since we won't be using example component anymore. And make sure our web pack is still running, of course. When I look down at my terminal, I can see that it is, and now in the view, all we have to do is inject categories as a dynamic prop. Remember to use v bind or the colon in front of categories, since we're not passing a little string here, but an array of categories.
+
+The nice thing here is that all we need to do is put our PHP variable categories inside the double curly braces. And this will actually call JSON in code automatically and properly double in-code HTML entities to avoid any syntax issues. So it really doesn't get much easier than this to pass an array from PHP to JavaScript. So now in the browser, if I just navigate to categories, I can see our category manager component and the list of categories.
+
+In the next video, we'll start building out the UI for the basic CRUD functionality.
+
+
 
