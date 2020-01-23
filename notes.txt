@@ -205,7 +205,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 -Now refresh the homepage at http://dev.nadias/ and click "Register" in the top RHS, and fill out the form:
 
 Roger
-roger@example.com
+rmoore@example.com
 nadias123
 
 And click Register
@@ -268,6 +268,359 @@ DB_DATABASE=nadias
 -Now go back and try to create a user again
 -We should be able to login and logout at this point
 -In the next video we will talk about email verification and forgotten passwords
+
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Enabling forgotten password and email verification:
+-If I pick "Forgot Your Password?" and hit submit I`m going to get an error because the default SMTP user doesn`t have a password:
+
+Swift_TransportException
+Expected response code 250 but got code "530", with message "530 5.7.1 Authentication required "
+
+-In the .env file if we change MAIL_DRIVER from smtp to log we will log emails instead of trying to send them:
+
+MAIL_DRIVER=smtp
+
+To:
+
+MAIL_DRIVER=log
+
+-The logs are located in ~\storage\logs
+
+-Users will be required to click an email verification link upon registration
+-In user.php we need to add the MustVerifyEmail interface:
+
+class User extends Authenticatable implements MustVerifyEmail
+
+-The above will trigger the verification logic on registration and email a link to the user
+-Now in our web.php we need to add some routes for sending and verifying registration links
+-We do this by passing an options array to routes:
+
+Auth::routes(['verify' => true]);
+
+-If we want to restrict access to the website to only allow users that have verified their emails, added verified at the end here:
+
+Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+
+-If you go to mailtrap.io then you can sign up for an account that can hold up to 50 emails for free without needing a credit card
+-At mailtrap.io go to the demo inbox to find the username and password you can add to our laravel .env file:
+
+Username:	d27f58e52ab04e
+Password:	13fba7772cbe57
+
+MAIL_HOST=smtp.mailtrap.io
+MAIL_USERNAME=d27f58e52ab04e
+MAIL_PASSWORD=13fba7772cbe57
+
+-Also change mail driver back to smtp:
+
+MAIL_DRIVER=smtp
+
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Using webpack with Laravel Mix:
+-See ~\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch1\01_05\begin
+-To compile and bundle such as javascript files, and CSS and SASS files, in our ~\resources\views\layouts\app.blade.php, we see these assets:
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+-That asset helper returns an absolute URL with HTTP or HTTPS
+-Those files are in ~\public\js and ~\public\css
+-Those files are recreated whenever the resources files change, such as:
+
+    ~\resources\js\app.js
+    ~\resources\sass\app.css
+
+-Let`s look at this file:    
+    ~\resources\js\app.js    
+
+/**
+ * First we will load all of this project`s JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
+
+require('./bootstrap');
+
+window.Vue = require('vue');
+
+/**
+ * The following block of code may be used to automatically register your
+ * Vue components. It will recursively scan this directory for the Vue
+ * components and automatically register them with their "basename".
+ *
+ * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
+ */
+
+// const files = require.context('./', true, /\.vue$/i)
+// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
+
+const app = new Vue({
+    el: '#app',
+});
+
+-Notice that this loads bootstrap.js which in turn loads a number of utilities like loaddash, jquery and axios
+-This line registers view to the global scope:
+
+window.Vue = require('vue');window.Vue = require('vue');
+
+-It also registers a global component:
+
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+-This mounts our root Vue instances to a div with the id app which is in the layout file we just looked at:
+
+const app = new Vue({
+    el: '#app',
+});
+
+-Vue may be complicated but configuring it with laravel is simple
+-Notice in webpack.mix.js there is a source (resources) and target (public) directory:
+
+mix.js('resources/js/app.js', 'public/js')
+   .sass('resources/sass/app.scss', 'public/css');
+
+-Let us try putting ExampleComponent.vue on a page and then changing it
+-Let us first install the Vetur extension in Visual Studio Code
+-In home.blade.php let us add it:
+
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Dashboard</div>
+
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    You are logged in!
+                </div>
+                <example-component></example-component>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+-Now in ExampleComponent.vue let us add the text "edited" and do a refresh:
+
+<template>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Example Component</div>
+
+                    <div class="card-body">
+                        I`m an example component - edited.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        mounted() {
+            console.log('Component mounted.')
+        }
+    }
+</script>
+
+-If we do a refresh we don`t see the "edited" text added because webpack is not even running yet
+-The browser doesn`t read .vue files on its own
+-Before we can get webpack running we need to install some front-end dependencies.  We usually want npm to do that on our host machine.
+-Now on the host do an install (open a terminal in Visual Studio Code by typing <CTRL>-<SHIFT>-`):
+
+PS C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\nadias> npm install
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.11 (node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.11: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+
+added 1040 packages from 491 contributors and audited 17228 packages in 61.637s
+
+29 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+PS C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\nadias> npm run watch-poll
+
+-Now go back to web page and type <CTRL>-F5 to do a hard refresh
+-So you should now see on the home page:
+
+I`m an example component - edited.
+
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Cache busting and Browsersync:
+-See ~\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch1\01_06\begin\nadias
+-Often times when you reload a webpage it will retrieve the value in the cache.  One way to prevent this issue is to add a query string with a unique hash to the file name.
+-We can accomplish this by adding a call to the version in our webpack.mix.js file 
+
+mix.js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')
+    .version();
+
+-In our app.blade.php layout file remember that asset just creates an absolute URL so we will have to change asset to mix:
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+To:
+
+    <!-- Scripts -->
+    <script src="{{ mix('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">    
+
+-Now stop the running npm watch process with CTRL-C:
+
+    ch job (Y/N)? y
+    PS C:\Users\msull\nadias
+
+And then restart it:
+
+    PS C:\Users\msull\nadias> npm run watch
+
+-Now you will see the changes immediately if you do a refresh and you will also see the hash if you view the source:
+
+    <!-- Scripts -->
+    <script src="/js/app.js?id=61fcbbd9446cf7c8619c" defer></script>
+
+-Let us test a change a change to our sass file now--open ~\resources\js\sass\app.scss and change it to yellow:
+
+.navbar-laravel {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+To:
+
+.navbar-laravel {
+    background-color: $yellow;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+-> $yellow is defined in the variables file _variables.scss
+
+-Cache busting is important during production but we don`t really need it in development if we can perform a full page refresh whenever a page changes
+-We can do that:
+
+webpack.mix.js:
+
+mix.js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css');
+
+if (mix.inProduction()) {
+    mix.version();
+}
+
+mix.browserSync('dev.nadias');
+
+-Now when I stop and restart "npm run watch" you will see it will load the site on localhost:
+
+http://localhost:3000
+
+-Now we have VS Code auto-saving, then webpack.mix.js auto-compiling, and then browser auto-refreshing
+-Webpack also has a feature called hot module replacement that that can inject updated modules without a full page refresh; see package.json:
+
+"hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+
+-Thus you can disable browser sync and type "npm run hot" instead; it is a great feature but the instructor says he has found it can be a bit harder to get working especially where there are more moving parts like in this Laravel project where mix is running on top of webpack
+-The other great thing about browser sync is that it will refresh after php changes as well
+-So now go to either http://dev.nadias or http://localhost:3000 and then open welcome.blade.php and change:
+
+<title>Laravel</title>
+
+To:
+
+<title>Nadia`s Garden Restaurant</title>
+
+-Then if you go back to the main page you will see that it has already refreshed
+
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Integrating a Layout:
+-Let us change the web.php routes file:
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+To:
+
+Route::get('/', function () {
+    return view('home');
+});
+
+-Now add this folder to the Visual Studio Code workspace:
+
+C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html
+
+-Let us open C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html\index.html and copy the title:
+
+Nadia`s Garden Restaurant
+
+And open app.blade.php and replace:
+
+<title>{{ config('app.name', 'Laravel') }}</title>    
+
+with:
+
+<title>{{ config('app.name', "Nadia`s Garden Restaurant") }}@yield('title')</title>    
+
+Let us also remove these font elements from the Laravel layout:
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+And add our fav icon:
+
+<link rel="icon" href="/images/favicon.ico">
+
+Now in our index.html let us copy the URL for this font:
+
+http://fonts.googleapis.com/css?family=Old+Standard+TT%3A400%2C400italic%2C700%7CMontserrat%3A400%2C700&#038;ver=1.0.0
+
+To:
+
+@import url('http://fonts.googleapis.com/css?family=Old+Standard+TT%3A400%2C400italic%2C700%7CMontserrat%3A400%2C700&#038;ver=1.0.0');
+
+And remove:
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.navbar-laravel {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+-The instructor is going to leave this yield because it is what is going to allow our content pages to extend this layout:
+
+@yield('content')
+
+-Now let us grab those authentication links and integrate them into the existing nadia`s nav bar
+
+
+
 
 
 
