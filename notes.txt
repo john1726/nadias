@@ -755,7 +755,10 @@ mysql> select * from categories;
 
 mysql>
 
-Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: 
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building views with Blade templates:
+-Now let us remove the should route here from web.php and we will want to use the home controller method
+
+
 
 
     

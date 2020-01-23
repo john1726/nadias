@@ -150,3 +150,25 @@ And by the way, if you don't create the seeder with artisan, and you're just sta
 
 And in the next video, we'll display this data on the homepage.
 
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building views with Blade templates:
+- [Instructor] Now we'll finish up our restaurant home page by using blade templating to display the categories from the database. Let's remove this slash route here and we'll want to use a home controller method to prepare the data for the home view. So we'll just change home to slash here so that we can serve the home page right on the bare domain like we were doing before. And we don't need the verified middleware here since we don't care if users viewing the home page are verified or even authenticated.
+
+Now in various controllers, such as the login controller, there are places where it redirects the user to home but since we don't have home anymore I'm going to use Control + Shift + H to find and replace and I'm going to look for equals space slash home end quotes and just replace that with slash. So if I hit enter now I see the places in these various controllers where the redirect to property is set and I'm going to click this to replace all.
+
+And now that's taken care of. In home controller now, if we go over there we also don't need this off middleware here since again we don't care if someone is authenticated for the actions in this controller. Now in the index method, let's grab all the categories and store them in a variable. So we'll do category and we could use the all method here. But if we want all of them and we want them ordered we can just use order by. And remember we're going to be ordering by our display order column.
+
+And then we'll just call get. Now we want to provide an array of parameters to the view which for now will just be categories categories. Now let's go over to the home view. And we'll make these categories, these article elements dynamic. I promise we'll get into using Vue very shortly, actually in the next video but there's really no reason to use Vue here because although the categories are data driven we don't really have any interactive or dynamic behavior once the page is loaded.
+
+So if I remove all of these articles except one then I can wrap this is a four each using blade syntax. And then we can iterate over the categories. And I'll use cat as my looping variable. So for the HREF attribute for the image, this is going to be a link to slash menu with a fragment identifier that points to a named anchor that we'll set up later. And then inside the double curly braces we just need cat name.
+
+And actually I'm going to use the string slug helper method to change spaces to hyphens and otherwise URL-ify this whole string. So let's copy this HREF attribute to the text link as well. And then for image, we want to keep the slash images and then remember cat image will give us just the file name. And we'll want to do an end for each down here and maybe indent that to make it a little easier to read.
+
+So now let's look at the home page. On the home page now, I see an error because this category class wasn't imported into the home controller. So I'm going to need a use declaration at the top of home controller for category. Otherwise I'll need to do app category. Since adding use declarations is sometimes tedious and error prone, I'm going to install an extension to help with that and also provide IntelliSense and auto completion for PHP.
+
+You'll find most PHP extensions aren't perfect but they will save you some time. So Control + Shift + X to look at extensions and I'm going to search for PHP IntelliPhence with a P-H in the middle. So I'm going to install this one and reload to activate. And you might have to wait a minute for it to do some indexing. But then if I retype category I should be able to hit enter now and I'll get my use declaration at the top there.
+
+You'll also want to do control comma to edit the settings for PHP and disable the basic suggestions in VS code so they don't interfere. Also I don't have PHP installed on Windows, so you may have noticed that message about not being able to validate against a specific PHP installation, and that's fine for now. And if webpack was running, then usually when you reload you'll lose that running process. So let's just do NPM run watch again.
+
+And now we have our homepage with three out of our four categories, but loaded from the database. And in the next video, we'll start to build the admin UI for updating this data.
+
+
