@@ -46,6 +46,7 @@ block="server {
     index index.php index.html index.htm;
 
     charset utf-8;
+    client_max_body_size 100M;
 
     $rewritesTXT
 
@@ -90,8 +91,8 @@ block="server {
         deny all;
     }
 
-    ssl_certificate     /etc/nginx/ssl/$1.crt;
-    ssl_certificate_key /etc/nginx/ssl/$1.key;
+    ssl_certificate     /etc/ssl/certs/$1.crt;
+    ssl_certificate_key /etc/ssl/certs/$1.key;
 }
 "
 
@@ -117,6 +118,8 @@ if ( ! defined( 'WP_CONTENT_DIR' ) ) {\\n\
 if ( ! defined( 'WP_CONTENT_URL' ) ) {\\n\
 	define( 'WP_CONTENT_URL', WP_HOME . '/wp-content' );\\n\
 }\\n\
+\\n\
+define( 'WP_DEBUG', true ); \\n\
 "
 
 

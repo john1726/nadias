@@ -2,6 +2,7 @@
 
 namespace Tests\Settings;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Laravel\Homestead\Settings\YamlSettings;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -9,15 +10,15 @@ use Tests\Traits\GeneratesTestDirectory;
 
 class YamlSettingsTest extends TestCase
 {
-    use GeneratesTestDirectory;
+    use ArraySubsetAsserts, GeneratesTestDirectory;
 
     /** @test */
     public function it_can_be_created_from_a_filename()
     {
         $settings = YamlSettings::fromFile(__DIR__.'/../../resources/Homestead.yaml');
 
-        $this->assertArraySubset([
-            'ip' => '192.168.10.10',
+        self::assertArraySubset([
+            'ip' => '192.168.56.56',
             'memory' => '2048',
             'cpus' => '2',
         ], $settings->toArray());
@@ -27,7 +28,7 @@ class YamlSettingsTest extends TestCase
     public function it_can_be_saved_to_a_file()
     {
         $settings = new YamlSettings([
-            'ip' => '192.168.10.10',
+            'ip' => '192.168.56.56',
             'memory' => '2048',
             'cpus' => 1,
         ]);
@@ -36,8 +37,8 @@ class YamlSettingsTest extends TestCase
         $settings->save($filename);
 
         $this->assertFileExists($filename);
-        $this->assertArraySubset([
-            'ip' => '192.168.10.10',
+        self::assertArraySubset([
+            'ip' => '192.168.56.56',
             'memory' => '2048',
             'cpus' => '1',
         ], Yaml::parse(file_get_contents($filename)));
@@ -47,7 +48,7 @@ class YamlSettingsTest extends TestCase
     public function it_can_update_its_attributes()
     {
         $settings = new YamlSettings([
-            'ip' => '192.168.10.10',
+            'ip' => '192.168.56.56',
             'memory' => '2048',
             'cpus' => 1,
         ]);
@@ -58,7 +59,7 @@ class YamlSettingsTest extends TestCase
             'cpus' => 2,
         ]);
 
-        $this->assertArraySubset([
+        self::assertArraySubset([
             'ip' => '127.0.0.1',
             'memory' => '4096',
             'cpus' => '2',
@@ -69,7 +70,7 @@ class YamlSettingsTest extends TestCase
     public function it_updates_only_not_null_attributes()
     {
         $settings = new YamlSettings([
-            'ip' => '192.168.10.10',
+            'ip' => '192.168.56.56',
             'memory' => '2048',
             'cpus' => 1,
         ]);
@@ -80,8 +81,8 @@ class YamlSettingsTest extends TestCase
             'cpus' => null,
         ]);
 
-        $this->assertArraySubset([
-            'ip' => '192.168.10.10',
+        self::assertArraySubset([
+            'ip' => '192.168.56.56',
             'memory' => '2048',
             'cpus' => '1',
         ], $settings->toArray());

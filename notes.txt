@@ -1,4 +1,5 @@
-Building Laravel and Vue.js Web Apps (see https://www.lynda.com/Laravel-tutorials/Building-Laravel-Vue-js-Web-Apps):
+Building Laravel and Vue.js Web Apps (see https://www.linkedin.com/learning/building-laravel-and-vue-js-2-web-apps/protecting-admin-pages-with-gates?u=103738058):
+with Michael Sullivan
 
 Description:
 Vue.js ships with Laravel, the hugely popular PHP web framework. But using this front-end framework along with Laravel to build full-stack web applications comes with its own set of challenges. In this project-based course, instructor Michael Sullivan steps through how to work with Vue.js and Laravel to create elegant, real-world apps. As he shows how to build a content management tool for a restaurant menu, Michael demonstrates how to scaffold an authentication system, build an embedded SPA with Vue Router, manage state complexity using Vuex, and more.
@@ -15,12 +16,12 @@ Topics include:
 -Managing state complexity using Vuex
 
 Building Laravel and Vue.js Web Apps: Module 0: Introduction: Laravel and Vue.js--Achieving full-stack elegance:
--Vue.js is now the default javascript library that comes wiith Laravel
+-Vue.js is now the default javascript library that comes with Laravel
 
 Building Laravel and Vue.js Web Apps: Module 0: Introduction: What you should know:
 -This course is not an introduction to PHP so you should be comfortable with that
 -MVC architecture
--This course is not an introduction to Vue.js so you should have experience with Vue.js already (see instructor`s course "Learning Vue.js" to get up to speed)
+-This course is not an introduction to Vue.js so you should have experience with Vue.js already (see instructor`s course "Learning Vue.js" to get up to speedat https://www.linkedin.com/learning/learning-vue-js-8602681/is-vue-for-you?autoplay=true&u=103738058)
 
 Software and Tooling (optional):
 -Node.js
@@ -148,8 +149,164 @@ keys:
 
 -Now if we cd to ~/Homestead we are ready to boot the machine with:
 
-    $ vagrant up
-    ...
+	D:\msys64>msys2_shell.cmd -use-full-path
+psalm@Grieg MSYS /d/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead
+$ vagrant up
+Bringing machine 'homestead' up with 'virtualbox' provider...
+==> homestead: Checking if box 'laravel/homestead' version '13.0.0' is up to date...
+==> homestead: Setting the name of the VM: homestead
+==> homestead: Clearing any previously set network interfaces...
+==> homestead: Preparing network interfaces based on configuration...
+    homestead: Adapter 1: nat
+    homestead: Adapter 2: hostonly
+==> homestead: Forwarding ports...
+    homestead: 80 (guest) => 8000 (host) (adapter 1)
+    homestead: 443 (guest) => 44300 (host) (adapter 1)
+    homestead: 22 (guest) => 2222 (host) (adapter 1)
+==> homestead: Running 'pre-boot' VM customizations...
+==> homestead: Booting VM...
+==> homestead: Waiting for machine to boot. This may take a few minutes...
+    homestead: SSH address: 127.0.0.1:2222
+    homestead: SSH username: vagrant
+    homestead: SSH auth method: private key
+    homestead:
+    homestead: Vagrant insecure key detected. Vagrant will automatically replace
+    homestead: this with a newly generated keypair for better security.
+    homestead:
+    homestead: Inserting generated public key within guest...
+    homestead: Removing insecure key from the guest if it's present...
+    homestead: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> homestead: Machine booted and ready!
+==> homestead: Checking for guest additions in VM...
+    homestead: The guest additions on this VM do not match the installed version of
+    homestead: VirtualBox! In most cases this is fine, but in rare cases it can
+    homestead: prevent things such as shared folders from working properly. If you see
+    homestead: shared folder errors, please make sure the guest additions within the
+    homestead: virtual machine match the version of VirtualBox you have installed on
+    homestead: your host and reload your VM.
+    homestead:
+    homestead: Guest Additions Version: 6.1.40
+    homestead: VirtualBox Version: 7.0
+==> homestead: Setting hostname...
+==> homestead: Configuring and enabling network interfaces...
+==> homestead: Mounting shared folders...
+    homestead: /vagrant => D:/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead
+    homestead: /home/vagrant/nadias => D:/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead/nadias
+==> homestead: Detected mount owner ID within mount options. (uid: 1000 guestpath: /home/vagrant/nadias)
+==> homestead: Detected mount group ID within mount options. (gid: 1000 guestpath: /home/vagrant/nadias)
+==> homestead: Running provisioner: file...
+    homestead: D:/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead/aliases => /tmp/bash_aliases
+==> homestead: Running provisioner: handle_aliases (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: setting authorize key (shell)...
+    homestead: Running: inline script
+    homestead:
+    homestead: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCkxS9pRoLIO2bMP51HSVqvwp1maiFtxya55obNgKRrlczq31Z736mJKMxlfMv6VnrZaUBUqHg7APP6OYlS7nlmKbS2LHh0KBB7dn0b/UHzO5j84ZWAfRVcnRg+Y1UBPQ1/uU8TQig7o07zvof4QEQQzKTWzOwBp8vyctILWoX3OdItYrI5Cfu/qHJHYyD9b2JbEnH18Cs9aOybR4xKLTSyv3pwgoq5OP9GLbCntLRCT0n4FR9BnYTGh8BQmvnfhyXO3uW1TaZ3CWkN54dlJ53Q8q9EsMUiCcLO9ts0QCUlP0GhVNVo6OFbcu/Pk1jZdR0amg6G6SMILNp7QXPwxRazhWTqh4qVpglDf6ChzRJdBQYUq9ajw5Y0OcgIGBhf2XHc1/seWlkHZ5CvpOFEXJM38/rZa46Up9JpcjLwutI1d4QGZokteHAGHnV9eTq6YWCT1eZyWd3rOnCZe2jVPdllS/bOoy9A1HJKkS1Pra3umZG70wcMSB5P15fVN/7dcIk= psalm@Grieg
+    homestead:
+==> homestead: Running provisioner: setting authorize permissions for id_rsa (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: mk_features (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: own_features (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: apt_update (shell)...
+    homestead: Running: inline script
+    homestead: Get:1 https://deb.nodesource.com/node_18.x focal InRelease [4,583 B]
+    homestead: Get:2 https://download.docker.com/linux/ubuntu focal InRelease [57.7 kB]
+    homestead: Get:3 http://apt.postgresql.org/pub/repos/apt focal-pgdg InRelease [117 kB]
+    homestead: Hit:4 http://ppa.launchpad.net/chris-lea/redis-server/ubuntu focal InRelease
+    homestead: Get:5 https://deb.nodesource.com/node_18.x focal/main amd64 Packages [776 B]
+    homestead: Hit:6 http://us.archive.ubuntu.com/ubuntu focal InRelease
+    homestead: Get:7 http://us.archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+    homestead: Get:8 https://download.docker.com/linux/ubuntu focal/stable amd64 Packages [30.3 kB]
+    homestead: Get:9 http://ppa.launchpad.net/ondrej/php/ubuntu focal InRelease [23.9 kB]
+    homestead: Get:10 http://us.archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
+    homestead: Get:11 http://us.archive.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+    homestead: Get:12 http://apt.postgresql.org/pub/repos/apt focal-pgdg/main amd64 Packages [264 kB]
+    homestead: Get:13 http://us.archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2,570 kB]
+    homestead: Get:14 http://ppa.launchpad.net/ondrej/php/ubuntu focal/main amd64 Packages [115 kB]
+    homestead: Get:15 http://us.archive.ubuntu.com/ubuntu focal-updates/main Translation-en [434 kB]
+    homestead: Get:16 http://us.archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [1,879 kB]
+    homestead: Get:17 http://us.archive.ubuntu.com/ubuntu focal-updates/restricted Translation-en [264 kB]
+    homestead: Get:18 http://us.archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1,063 kB]
+    homestead: Get:19 http://us.archive.ubuntu.com/ubuntu focal-updates/universe Translation-en [253 kB]
+    homestead: Get:20 http://us.archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 Packages [25.2 kB]
+    homestead: Get:21 http://us.archive.ubuntu.com/ubuntu focal-backports/main amd64 Packages [45.7 kB]
+    homestead: Get:22 http://ppa.launchpad.net/ondrej/php/ubuntu focal/main Translation-en [37.5 kB]
+    homestead: Get:23 http://us.archive.ubuntu.com/ubuntu focal-backports/universe amd64 Packages [25.0 kB]
+    homestead: Get:24 http://us.archive.ubuntu.com/ubuntu focal-security/main amd64 Packages [2,192 kB]
+    homestead: Get:25 http://us.archive.ubuntu.com/ubuntu focal-security/main Translation-en [354 kB]
+    homestead: Get:26 http://us.archive.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [1,770 kB]
+    homestead: Get:27 http://us.archive.ubuntu.com/ubuntu focal-security/restricted Translation-en [249 kB]
+    homestead: Get:28 http://us.archive.ubuntu.com/ubuntu focal-security/universe amd64 Packages [839 kB]
+    homestead: Get:29 http://us.archive.ubuntu.com/ubuntu focal-security/universe Translation-en [172 kB]
+    homestead: Get:30 http://us.archive.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [22.9 kB]
+    homestead: Get:31 http://us.archive.ubuntu.com/ubuntu focal-security/multiverse Translation-en [5,488 B]
+    homestead: Fetched 13.1 MB in 5s (2,515 kB/s)
+    homestead: Reading package lists...
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Invalid feature: mysql
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: mariadb because it is set to false
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: postgresql because it is set to false
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: ohmyzsh because it is set to false
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: webdriver because it is set to false
+==> homestead: Running provisioner: enable mysql (shell)...
+    homestead: Running: inline script
+    homestead: Synchronizing state of mysql.service with SysV service script with /lib/systemd/systemd-sysv-install.
+    homestead: Executing: /lib/systemd/systemd-sysv-install enable mysql
+==> homestead: Running provisioner: start mysql (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-k9vhod.sh
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-boap25.sh
+==> homestead: Running provisioner: Creating Certificate: dev.nadias (shell)...
+    homestead: Running: script: Creating Certificate: dev.nadias
+    homestead: Updating certificates in /etc/ssl/certs...
+    homestead: rehash: warning: skipping duplicate certificate in ca.homestead.homestead.pem
+    homestead: rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+    homestead: 1 added, 0 removed; done.
+    homestead: Running hooks in /etc/ca-certificates/update.d...
+    homestead: done.
+==> homestead: Running provisioner: Creating Site: dev.nadias (shell)...
+    homestead: Running: script: Creating Site: dev.nadias
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-mxou.sh
+==> homestead: Running provisioner: Checking for old Schedule (shell)...
+    homestead: Running: script: Checking for old Schedule
+==> homestead: Running provisioner: Clear Variables (shell)...
+    homestead: Running: script: Clear Variables
+==> homestead: Running provisioner: Restarting Cron (shell)...
+    homestead: Running: script: Restarting Cron
+==> homestead: Running provisioner: Restart Webserver (shell)...
+    homestead: Running: script: Restart Webserver
+==> homestead: Running provisioner: Creating MySQL / MariaDB Database: nadias (shell)...
+    homestead: Running: script: Creating MySQL / MariaDB Database: nadias
+    homestead: We didn't find MariaDB ($mariadb), skipping $DB creation
+==> homestead: Running provisioner: Update Composer (shell)...
+    homestead: Running: script: Update Composer
+    homestead: Upgrading to version 2.5.7 (stable channel).
+    homestead:
+    homestead: Use composer self-update --rollback to return to version 2.5.1
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-dm2rvo.sh
+==> homestead: Running provisioner: Update motd (shell)...
+    homestead: Running: script: Update motd
+==> homestead: Running provisioner: Run after.sh (shell)...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-wwrz0n.sh
+
+psalm@Grieg MSYS /d/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead
     $ vagrant ssh
     Welcome to Ubuntu 18.04.3 LTS (GNU/Linux 4.15.0-72-generic x86_64)
     ....
@@ -163,6 +320,37 @@ Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: 
     Installing dependencies (including require-dev) from lock file
         1/76:       https://codeload.github.com/sebastianbergmann/code-unit-reverse-lookup/legacy.zip/4419fcdb5eabb9caa61a27c7a1db532a6b55dd18
     ...
+  - Installing spatie/laravel-ignition (2.1.3): Extracting archive
+	50 package suggestions were added by new dependencies, use `composer suggest` to see details.
+	Generating optimized autoload files
+	> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+	> @php artisan package:discover --ansi
+
+		INFO  Discovering packages.
+
+	laravel/sail ................................................................................................................................ DONE
+	laravel/sanctum ............................................................................................................................. DONE
+	laravel/tinker .............................................................................................................................. DONE
+	nesbot/carbon ............................................................................................................................... DONE
+	nunomaduro/collision ........................................................................................................................ DONE
+	nunomaduro/termwind ......................................................................................................................... DONE
+	spatie/laravel-ignition ..................................................................................................................... DONE
+
+	81 packages you are using are looking for funding.
+	Use the `composer fund` command to find out more!
+	> @php artisan vendor:publish --tag=laravel-assets --ansi --force
+
+	INFO  No publishable resources for tag [laravel-assets].
+
+	No security vulnerability advisories found
+	> @php artisan key:generate --ansi
+
+	INFO  Application key set successfully.
+
+	INFO  Application ready! Build something amazing.
+
+vagrant@homestead:~$
+	
     
 -Now we should already be able to navigate to the dev.nadias and see the default laravel website
 

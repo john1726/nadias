@@ -7,7 +7,7 @@ alias art=artisan
 
 alias codecept='vendor/bin/codecept'
 alias phpspec='vendor/bin/phpspec'
-alias phpunit='vendor/bin/phpunit'
+alias pint='vendor/bin/pint'
 alias serve=serve-laravel
 
 alias xoff='sudo phpdismod -s cli xdebug'
@@ -18,12 +18,6 @@ alias nrw="npm run watch"
 alias nrwp="npm run watch-poll"
 alias nrh="npm run hot"
 alias nrp="npm run production"
-
-alias yrd="yarn run dev"
-alias yrw="yarn run watch"
-alias yrwp="yarn run watch-poll"
-alias yrh="yarn run hot"
-alias yrp="yarn run production"
 
 function artisan() {
     php artisan "$@"
@@ -36,8 +30,29 @@ function dusk() {
         Xvfb :0 -screen 0 1280x960x24 &
     fi
 
-    php artisan dusk --filter "$@"
+    if [[ $? -eq 0 ]]
+    then
+        php artisan dusk
+    else
+        php artisan dusk --filter "$@"
+    fi
 }
+
+function p() {
+    if [ -f vendor/bin/pest ]; then
+       vendor/bin/pest "$@"
+    else
+       vendor/bin/phpunit "$@"
+    fi
+ }
+
+ function pf() {
+    if [ -f vendor/bin/pest ]; then
+       vendor/bin/pest --filter "$@"
+    else
+       vendor/bin/phpunit --filter "$@"
+    fi
+ }
 
 function php56() {
     sudo update-alternatives --set php /usr/bin/php5.6
@@ -75,12 +90,30 @@ function php74() {
     sudo update-alternatives --set phpize /usr/bin/phpize7.4
 }
 
+function php80() {
+    sudo update-alternatives --set php /usr/bin/php8.0
+    sudo update-alternatives --set php-config /usr/bin/php-config8.0
+    sudo update-alternatives --set phpize /usr/bin/phpize8.0
+}
+
+function php81() {
+    sudo update-alternatives --set php /usr/bin/php8.1
+    sudo update-alternatives --set php-config /usr/bin/php-config8.1
+    sudo update-alternatives --set phpize /usr/bin/phpize8.1
+}
+
+function php82() {
+    sudo update-alternatives --set php /usr/bin/php8.2
+    sudo update-alternatives --set php-config /usr/bin/php-config8.2
+    sudo update-alternatives --set phpize /usr/bin/phpize8.2
+}
+
 function serve-apache() {
     if [[ "$1" && "$2" ]]
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/apache.sh
-        sudo bash /vagrant/scripts/site-types/apache.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/apache.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -93,7 +126,7 @@ function serve-laravel() {
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/laravel.sh
-        sudo bash /vagrant/scripts/site-types/laravel.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/laravel.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -105,7 +138,7 @@ function serve-proxy() {
     if [[ "$1" && "$2" ]]
     then
         sudo dos2unix /vagrant/scripts/site-types/proxy.sh
-        sudo bash /vagrant/scripts/site-types/proxy.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/proxy.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -118,7 +151,7 @@ function serve-silverstripe() {
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/silverstripe.sh
-        sudo bash /vagrant/scripts/site-types/silverstripe.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/silverstripe.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -131,7 +164,7 @@ function serve-spa() {
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/spa.sh
-        sudo bash /vagrant/scripts/site-types/spa.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/spa.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -144,7 +177,7 @@ function serve-statamic() {
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/statamic.sh
-        sudo bash /vagrant/scripts/site-types/statamic.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/statamic.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -157,7 +190,7 @@ function serve-symfony2() {
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/symfony2.sh
-        sudo bash /vagrant/scripts/site-types/symfony2.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/symfony2.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -170,7 +203,7 @@ function serve-symfony4() {
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/symfony4.sh
-        sudo bash /vagrant/scripts/site-types/symfony4.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/symfony4.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -183,7 +216,7 @@ function serve-pimcore() {
     then
         sudo bash /vagrant/scripts/create-certificate.sh "$1"
         sudo dos2unix /vagrant/scripts/site-types/pimcore.sh
-        sudo bash /vagrant/scripts/site-types/pimcore.sh "$1" "$2" 80 443 "${3:-7.4}"
+        sudo bash /vagrant/scripts/site-types/pimcore.sh "$1" "$2" 80 443 "${3:-8.1}"
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -194,7 +227,7 @@ function serve-pimcore() {
 function share() {
     if [[ "$1" ]]
     then
-        ngrok http ${@:2} -host-header="$1" 80
+        ngrok http ${@:2} $1:80
     else
         echo "Error: missing required parameters."
         echo "Usage: "
@@ -277,8 +310,8 @@ function xphp() {
     HOST_IP=$(last --limit=1 | grep -oP '\d+(\.\d+){3}')
 
     php \
-        -dxdebug.remote_host=${HOST_IP} \
-        -dxdebug.remote_autostart=1 \
+        -dxdebug.client_host=${HOST_IP} \
+        -dxdebug.start_with_request=yes \
         "$@"
 
     if ! $XDEBUG_ENABLED; then xoff; fi

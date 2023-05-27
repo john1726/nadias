@@ -46,8 +46,15 @@ block="server {
     index index.html index.htm index.php;
 
     charset utf-8;
+    client_max_body_size 100M;
 
     $rewritesTXT
+
+
+    location /index-test.php/ {
+        try_files \$uri \$uri/ /index-test.php\$is_args\$args;
+        $headersTXT
+    }
 
     location / {
         try_files \$uri \$uri/ /index.php\$is_args\$args;
@@ -88,8 +95,8 @@ block="server {
         deny all;
     }
 
-    ssl_certificate     /etc/nginx/ssl/$1.crt;
-    ssl_certificate_key /etc/nginx/ssl/$1.key;
+    ssl_certificate     /etc/ssl/certs/$1.crt;
+    ssl_certificate_key /etc/ssl/certs/$1.key;
 }
 "
 

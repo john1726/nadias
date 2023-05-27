@@ -1,62 +1,46 @@
-# OS-specific
-.DS_Store
-
-# Editor swapfiles
-.*.sw?
-*~
-
-# Vagrant stuff
-acceptance_config.yml
-boxes/*
+/vendor
 /.vagrant
-/website/.vagrant
-/website/build
-/vagrant-spec.config.rb
-test/vagrant-spec/.vagrant/
+phpunit.xml
+/Homestead.yaml
+/Homestead.json
+/after.sh
+/aliases
+/mysqldump.sql.gz
+/mysql_backup
+/postgres_backup
+/user-customizations.sh
+.phpunit.result.cache
+wsl-init.log
+.backup/*
 
-# app.js
-/iws-site/public/js/app.js
+# Created by https://www.gitignore.io/api/laravel
 
-# VS Editor 
-iws-site/.vs
+### Laravel ###
+node_modules/
+npm-debug.log
 
-# Bundler/Rubygems
-*.gem
-.bundle
-pkg/*
-tags
-/Gemfile.lock
-test/tmp/
-/exec
-.ruby-bundle
+# Laravel 4 specific
+bootstrap/compiled.php
+app/storage/
 
-# Documentation
-_site/*
-.yardoc/
-doc/
+# Laravel 5 & Lumen specific
+public/storage
+public/hot
+storage/*.key
+.env.*.php
+.env.php
+.env
+Homestead.yaml
+Homestead.json
 
-# Python
-*.pyc
+# Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
+.rocketeer/
 
-# Rubinius
-*.rbc
-
-# IDE junk
-.idea/*
-*.iml
-.project
-
-# Ruby Managers
-.rbenv
-.rbenv-gemsets
-.ruby-gemset
-.ruby-version
-.rvmrc
-
-# Box storage for spec
-test/vagrant-spec/boxes/*.box
-
-ubuntu-bionic-18.04-cloudimg-console.log
-.cache
-npm-debug.log.*
-
+/.phpunit.cache
+/bootstrap/ssr
+.phpunit.result.cache
+auth.json
+yarn-error.log
+/.fleet
+/.idea
+/.vscode

@@ -1,33 +1,48 @@
 ---
-ip: "192.168.10.10"
-memory: 4096
-cpus: 2
+ip: "192.168.56.56"
+memory: 8192
+cpus: 4
 provider: virtualbox
 
 authorize: ~/.ssh/id_rsa.pub
 
-#keys:
-#    - ~/.ssh/id_rsa
+keys:
+    - ~/.ssh/id_rsa
 
 folders:
-    - map: C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVueJsWebApps\nadias
-      to: /home/vagrant/nadias
+    - map: D:\Workspace\GResources\Courses\Lynda\BuildingLaravelVuejsWebApps\Homestead\nadias
+      to: /vagrant/nadias
 
 sites:
     - map: dev.nadias
-      to: /home/vagrant/nadias/public
+      to: /vagrant/nadias/public
 
 databases:
     - nadias
 
 features:
+    - mysql: true
     - mariadb: false
+    - postgresql: false
     - ohmyzsh: false
     - webdriver: false
 
-# ports:
-#     - send: 50000
-#       to: 5000
-#     - send: 7777
-#       to: 777
-#       protocol: udp
+services:
+    - enabled:
+          - "mysql"
+#    - disabled:
+#        - "postgresql@11-main"
+
+#ports:
+#    - send: 33060 # MySQL/MariaDB
+#      to: 3306
+#    - send: 4040
+#      to: 4040
+#    - send: 54320 # PostgreSQL
+#      to: 5432
+#    - send: 8025 # Mailhog
+#      to: 8025
+#    - send: 9600
+#      to: 9600
+#    - send: 27017
+#      to: 27017

@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\database\\migrations",
+    "\\public",
+    "\\public\\js",
+    "\\resources",
+    "\\resources\\sass",
+    "\\resources\\views",
+    "\\resources\\views\\admin",
+    "\\resources\\views\\admin\\categories"
+  ],
+  "SelectedNode": "\\public\\js\\app.js",
+  "PreviewInSolutionExplorer": false
+}
