@@ -1,3 +1,5 @@
+AWS: MySQL db password: 'MyPassword@123'
+
 Building Laravel and Vue.js Web Apps (see https://www.linkedin.com/learning/building-laravel-and-vue-js-2-web-apps/protecting-admin-pages-with-gates?u=103738058):
 with Michael Sullivan
 
@@ -174,7 +176,7 @@ Bringing machine 'homestead' up with 'virtualbox' provider...
     homestead: this with a newly generated keypair for better security.
     homestead:
     homestead: Inserting generated public key within guest...
-    homestead: Removing insecure key from the guest if it's present...
+    homestead: Removing insecure key from the guest if it`s present...
     homestead: Key inserted! Disconnecting and reconnecting using new SSH key...
 ==> homestead: Machine booted and ready!
 ==> homestead: Checking for guest additions in VM...
@@ -293,7 +295,7 @@ Bringing machine 'homestead' up with 'virtualbox' provider...
     homestead: Running: script: Restart Webserver
 ==> homestead: Running provisioner: Creating MySQL / MariaDB Database: nadias (shell)...
     homestead: Running: script: Creating MySQL / MariaDB Database: nadias
-    homestead: We didn't find MariaDB ($mariadb), skipping $DB creation
+    homestead: We didn`t find MariaDB ($mariadb), skipping $DB creation
 ==> homestead: Running provisioner: Update Composer (shell)...
     homestead: Running: script: Update Composer
     homestead: Upgrading to version 2.5.7 (stable channel).
@@ -314,7 +316,7 @@ psalm@Grieg MSYS /d/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebAp
 Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Scaffolding an authentication system:
 -Now inside the vm we can just do:
 
-    vagrant@homestead:~$ laravel new nadias --force
+    vagrant@homestead:/vagrant$ laravel new nadias --force
     Crafting application...
     Loading composer repositories with package information
     Installing dependencies (including require-dev) from lock file
@@ -330,7 +332,7 @@ Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: 
 
 	laravel/sail ................................................................................................................................ DONE
 	laravel/sanctum ............................................................................................................................. DONE
-	laravel/tinker .............................................................................................................................. DONE
+	laravel/tinker .......................  ....................................................................................................... DONE
 	nesbot/carbon ............................................................................................................................... DONE
 	nunomaduro/collision ........................................................................................................................ DONE
 	nunomaduro/termwind ......................................................................................................................... DONE
@@ -349,15 +351,16 @@ Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: 
 
 	INFO  Application ready! Build something amazing.
 
-vagrant@homestead:~$
-	
+vagrant@homestead:/vagrant$
+
+-Updated location to C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVuejsWebApps\Homestead on old laptop	
     
 -Now we should already be able to navigate to the dev.nadias and see the default laravel website
 
     http://dev.nadias/
 
 -Now in Visual Studio Code choose File -> "Add Folder to Workspace" and choose "nadias"
--Most of the code is under app but let`s take a look under routes where we will see web.php
+-Most of the code is under app but let`s take a look under routes where we will see ~\nadias\routes\web.php
 
 <?php
 
@@ -365,20 +368,127 @@ Route::get('/', function () {
     return view('welcome');
 });
 
--This opens welcome.blade.ph
--Now to add a user authentication framework, inside vagrant just cd to ~/nadias and type "artisan make:auth"
+-This opens welcome.blade.php
+-Now to add a user authentication framework, inside vagrant just cd to ~/nadias and type "artisan make:auth" --> *** NOTE that this is the legacy method.  See steps below to add auth!
 
 -> NOTE: In laravel 6 you need INSTEAD to use these commands:
 
     $ composer require laravel/ui --dev
     ...
     $ php artisan ui vue --auth
-    ...
-    $ npm install
-    ....
-    $ npm run dev
-    ...
 
+
+    $ npm install
+   INFO  Authentication scaffolding generated successfully.
+
+   INFO  Vue scaffolding installed successfully.
+
+   WARN  Please run [npm install && npm run dev] to compile your fresh scaffolding.
+
+vagrant@homestead:/vagrant/nadias$ npm install
+npm WARN cleanup Failed to remove some directories [
+npm WARN cleanup   [
+npm WARN cleanup     '/vagrant/nadias/node_modules/@vue/compiler-dom',
+npm WARN cleanup     [Error: ETXTBSY: text file is busy, rmdir '/vagrant/nadias/node_modules/@vue/compiler-dom/dist'] {
+npm WARN cleanup       errno: -26,
+npm WARN cleanup       code: 'ETXTBSY',
+npm WARN cleanup       syscall: 'rmdir',
+npm WARN cleanup       path: '/vagrant/nadias/node_modules/@vue/compiler-dom/dist'
+npm WARN cleanup     }
+npm WARN cleanup   ],
+npm WARN cleanup   [
+npm WARN cleanup     '/vagrant/nadias/node_modules/@popperjs',
+npm WARN cleanup     [Error: ETXTBSY: text file is busy, rmdir '/vagrant/nadias/node_modules/@popperjs/core/dist/esm/modifiers'] {
+npm WARN cleanup       errno: -26,
+npm WARN cleanup       code: 'ETXTBSY',
+npm WARN cleanup       syscall: 'rmdir',
+npm WARN cleanup       path: '/vagrant/nadias/node_modules/@popperjs/core/dist/esm/modifiers'
+npm WARN cleanup     }
+npm WARN cleanup   ]
+npm WARN cleanup ]
+npm notice
+npm notice New minor version of npm available! 9.3.0 -> 9.6.7
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v9.6.7
+npm notice Run npm install -g npm@9.6.7 to update!
+npm notice
+npm ERR! code EPROTO
+npm ERR! syscall symlink
+npm ERR! path ../@babel/parser/bin/babel-parser.js
+npm ERR! dest /vagrant/nadias/node_modules/.bin/parser
+npm ERR! errno -71
+npm ERR! EPROTO: protocol error, symlink '../@babel/parser/bin/babel-parser.js' -> '/vagrant/nadias/node_modules/.bin/parser'
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/vagrant/.npm/_logs/2023-05-28T00_14_01_661Z-debug-0.log	
+	
+-> Solution: First ran "npm install" from the Windows host in msys64, then executed "npm install && npm run dev" on the Ubuntu VM	(see https://stackoverflow.com/questions/56729305/npm-err-eproto-protocol-error-symlink-babel-parser-bin-babel-parser-js)
+	
+    $ npm run dev
+
+-Which should then show:
+
+  VITE v4.3.9  ready in 4596 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h to show help
+
+--------------------------------------------------------------------------------
+node:internal/errors:490
+    ErrorCaptureStackTrace(err);
+    ^
+
+Error: ENOSPC: System limit for number of file watchers reached, watch '/vagrant/nadias/vendor/phpunit/phpunit/src/Event/Events/TestRunner/Started.php'
+    at FSWatcher.<computed> (node:internal/fs/watchers:247:19)
+    at Object.watch (node:fs:2343:34)
+    at createFsWatchInstance (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50470:17)
+    at setFsWatchListener (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50517:15)
+    at NodeFsHandler._watchWithNodeFs (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50672:14)
+    at NodeFsHandler._handleFile (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50736:23)
+    at NodeFsHandler._addToNodeFs (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50978:21)
+Emitted 'error' event on FSWatcher instance at:
+    at FSWatcher._handleError (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:52169:10)
+    at NodeFsHandler._addToNodeFs (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50986:18) {
+  errno: -28,
+  syscall: 'watch',
+  code: 'ENOSPC',
+  path: '/vagrant/nadias/vendor/phpunit/phpunit/src/Event/Events/TestRunner/Started.php',
+  filename: '/vagrant/nadias/vendor/phpunit/phpunit/src/Event/Events/TestRunner/Started.php'
+
+-> Solution: See https://stackoverflow.com/questions/55763428/react-native-error-enospc-system-limit-for-number-of-file-watchers-reached
+
+The meaning of this error is that the number of files monitored by the system has reached the limit!!
+
+Result: The command executed failed! Or throw a warning (such as executing a react-native start VSCode)
+
+Solution:
+
+Modify the number of system monitoring files
+
+Ubuntu
+
+sudo gedit /etc/sysctl.conf
+
+Add a line at the bottom
+
+fs.inotify.max_user_watches=524288
+
+Then save and exit!
+
+sudo sysctl -p
+
+to check it
+
+Then it is solved!        
+
+-----
+
+OR in a single command:
+
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -pecho fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p        
+        
+--------------------------------------------------------------------------------
+  
 -Now that we have installed auth we can now see this has been aded to web.php:
 
 Auth::routes();
@@ -404,7 +514,7 @@ Illuminate\Database\QueryException
 SQLSTATE[42S02]: Base table or view not found: 1146 Table 'nadias.users' doesn`t exist (SQL: select count(*) as aggregate from `users` where `email` = roger@example.com)
 http://dev.nadias/register
 
--Under config in database.php it us checking DB_DATABASE to find the database and then using forge if it can`t find the database
+-Under config in database.php it is checking DB_DATABASE to find the database and then using forge if it can`t find the database
 
         'mysql' => [
             'driver' => 'mysql',
@@ -453,6 +563,10 @@ DB_DATABASE=nadias
 
     vagrant@homestead:~/nadias$ ./artisan migrate
 
+NOTE: To revert database changes:
+
+    vagrant@homestead:/vagrant/nadias$ ./artisan migrate:rollback        
+        
 -Now go back and try to create a user again
 -We should be able to login and logout at this point
 -In the next video we will talk about email verification and forgotten passwords
@@ -461,7 +575,7 @@ Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: 
 -If I pick "Forgot Your Password?" and hit submit I`m going to get an error because the default SMTP user doesn`t have a password:
 
 Swift_TransportException
-Expected response code 250 but got code "530", with message "530 5.7.1 Authentication required "
+Expected response code 250 but got code "530", with message "530 5.7.1 Authentication required "
 
 -In the .env file if we change MAIL_DRIVER from smtp to log we will log emails instead of trying to send them:
 
@@ -502,7 +616,7 @@ MAIL_PASSWORD=13fba7772cbe57
 
 MAIL_DRIVER=smtp
 
-Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Using webpack with Laravel Mix:
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Using webpack with Laravel Mix: -> But see ViteHasReplacedWebpackWithLaravelMix.pdf
 -See ~\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch1\01_05\begin
 -To compile and bundle such as javascript files, and CSS and SASS files, in our ~\resources\views\layouts\app.blade.php, we see these assets:
 
@@ -558,7 +672,7 @@ const app = new Vue({
 -Notice that this loads bootstrap.js which in turn loads a number of utilities like loaddash, jquery and axios
 -This line registers view to the global scope:
 
-window.Vue = require('vue');window.Vue = require('vue');
+window.Vue = require('vue');
 
 -It also registers a global component:
 
@@ -653,7 +767,7 @@ PS ~Lynda\BuildingLaravelVueJsWebApps\nadias> npm run watch-poll
 -So you should now see on the home page:
 
 I`m an example component - edited.
-
+  
 Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Cache busting and Browsersync:
 -See ~\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch1\01_06\begin\nadias
 -Often times when you reload a webpage it will retrieve the value in the cache.  One way to prevent this issue is to add a query string with a unique hash to the file name.
@@ -916,10 +1030,12 @@ class CategoriesTableSeeder extends Seeder
     }
 }
 
+(see ProgramsTableSeeder)
+        
 -We will insert the desert category using our admin tool later
 -Now run the seeder:
 
-vagrant@homestead:~/nadias$ ./artisan db:seed
+vagrant@homestead:~/nadias$ ./artisan db:seed 
 
 -BTW you might need to run this first for it to resolve the Categories table if you get this error:
 
@@ -944,7 +1060,8 @@ mysql> select * from categories;
 mysql>
 
 Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building views with Blade templates:
--Now let us remove the should route here from web.php and we will want to use the home controller method
+-"Now we'll finish up our restaurant home page by using blade templating to display the categories from the database."        
+-Now let us remove the slash route here from web.php and we will want to use the home controller method
 
 Route::get('/', function () {
     return view('home');
@@ -962,7 +1079,12 @@ Route::get('/', 'HomeController@index')->name('home');
 -Remember to do a ctrl-shift-h to find and replace all '/home' with '/'
 -Now in HomeController remove the 'auth' middleware
 
-$this->middleware('auth');
+HomeController.php:
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }        
 
 -Now in the index method let us grab all the categories:
 
@@ -972,6 +1094,16 @@ $this->middleware('auth');
         return view('home', compact('categories'));
     }
 
+OR:
+
+    public function index()
+    {
+        $categories = Program::orderBy('display_order')->get();
+        return view('home', [
+            'categories' => $categories
+        ]);
+    }        
+        
 -Now let us go over to the home.blade.php view so that the categories are dynamic
 -Remove this:
 
@@ -1002,14 +1134,22 @@ $this->middleware('auth');
     @endforeach
 
 -str_slug changes spaces to hyphens, etc
--Also add use for Category
+-Receiving error:
+
+    Call to undefined function str_slug()        
+
+-> Solution: See https://stackoverflow.com/questions/57864711/call-to-undefined-function-str-slug-in-laravel-6-0
+
+    vagrant@homestead:/vagrant/nadias$ composer require laravel/helpers
+        
 -There is an extension to help with this (CTRL-SHIF-X to open extensions in VS Code) and search for:
 
     PHP Intelliphense
 
+-Also add use for Category        
 -This will add use declaration if you type "Category":
 
-use App\Category;
+use App\Models\Category;
 
 -Also do CTRL-, to edit the settings for PHP to disable basic suggestions so they don`t interfere
 ->Uncheck "PHP Suggest:Basic"
@@ -1669,3 +1809,151 @@ Now in CategoryManager.vue let us finish removeCategory:
             },
     
 Building Laravel and Vue.js Web Apps: Module 3: Building an Embedded SPA: Protecting admin pages with gates:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+
+Other issues:
+
+rmoore@Bartok MSYS /d/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead
+$ vagrant up
+Bringing machine 'homestead' up with 'virtualbox' provider...
+==> homestead: Checking if box 'laravel/homestead' version '13.0.0' is up to date...
+==> homestead: Clearing any previously set network interfaces...
+The specified host network collides with a non-hostonly network!
+This will cause your specified IP to be inaccessible. Please change
+the IP or name of your host only network so that it no longer matches that of
+a bridged or non-hostonly network.
+
+Bridged Network Address: '192.168.50.0'
+Host-only Network 'Intel(R) Wi-Fi 6 AX201 160MHz': '192.168.50.0'
+
+-> Solution: Re-initialize Homestead.yaml using ./init.sh (cf https://stackoverflow.com/questions/39049717/vagrant-network-collides-with-a-non-hostonly-networkhttps://stackoverflow.com/questions/39049717/vagrant-network-collides-with-a-non-hostonly-network):

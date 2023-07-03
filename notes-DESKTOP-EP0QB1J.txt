@@ -1,0 +1,1812 @@
+Building Laravel and Vue.js Web Apps (see https://www.linkedin.com/learning/building-laravel-and-vue-js-2-web-apps/protecting-admin-pages-with-gates?u=103738058):
+with Michael Sullivan
+
+Description:
+Vue.js ships with Laravel, the hugely popular PHP web framework. But using this front-end framework along with Laravel to build full-stack web applications comes with its own set of challenges. In this project-based course, instructor Michael Sullivan steps through how to work with Vue.js and Laravel to create elegant, real-world apps. As he shows how to build a content management tool for a restaurant menu, Michael demonstrates how to scaffold an authentication system, build an embedded SPA with Vue Router, manage state complexity using Vuex, and more.
+
+Topics include:
+-Configuring a virtual machine
+-Using webpack and Laravel Mix
+-Managing file uploads
+-Protecting routes and models with policies
+-Building an API with Laravel Passport
+-Building an embedded SPA with Vue Router
+-Protecting admin pages with gates
+-Displaying model validation errors
+-Managing state complexity using Vuex
+
+--------------------------------------------------------------------------------
+
+Building Laravel and Vue.js Web Apps: Module 0: Introduction: Laravel and Vue.js--Achieving full-stack elegance:
+-Vue.js is now the default javascript library that comes with Laravel
+
+--------------------------------------------------------------------------------
+
+Building Laravel and Vue.js Web Apps: Module 0: Introduction: What you should know:
+-This course is not an introduction to PHP so you should be comfortable with that
+-MVC architecture
+-This course is not an introduction to Vue.js so you should have experience with Vue.js already (see instructor`s course "Learning Vue.js" to get up to speedat https://www.linkedin.com/learning/learning-vue-js-8602681/is-vue-for-you?autoplay=true&u=103738058)
+
+Software and Tooling (optional):
+-Node.js
+-Visual Studio Code
+-Vue.js devtools extension (Chrome or Firefox)
+-Vagrant and VirtualBox (or other virtualization provider)
+-Git
+
+--------------------------------------------------------------------------------
+
+Building Laravel and Vue.js Web Apps: Module 0: Introduction: Demo Project Overview:
+-Nadia`s garden website
+
+--------------------------------------------------------------------------------
+
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Installing Homestead:
+-https://laravel.com
+-Homestead is a virtual machine that comes pre-packaged with everything you need to build websites with laravel and vue.js
+-Homestead is a Vagrant box
+-Vagrant alone can`t handle everything--we also need a virtualization provider such as VirtualBox, VMWare or AWS to actually run the virtual machine
+-Also the instructor will be using PowerShell and he suggests running the *** shell as administrator *** as well as your IDE 
+-This is the command to add the homestead box to Vagrant (see https://laravel.com/docs/6.x/homestead) but please note that you may need to choose the VM provider:
+
+    $ vagrant box add laravel/homestead
+    ==> box: Loading metadata for box 'laravel/homestead'
+        box: URL: https://vagrantcloud.com/laravel/homestead
+    ==> box: Adding box 'laravel/homestead' (v9.2.2-alpha1) for provider: virtualbox
+        box: Downloading: https://vagrantcloud.com/laravel/boxes/homestead/versions/9.2.2-alpha1/providers/virtualbox.box
+        box: Download redirected to host: vagrantcloud-files-production.s3.amazonaws.com
+        box:
+        box: Calculating and comparing box checksum...
+    ==> box: Successfully added box 'laravel/homestead' (v9.2.2-alpha1) for 'virtualbox'!
+
+--------------------------------------------------------------------------------
+    
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Configuring and booting the virtual machine:
+-We need to clone the repository on github because it has scripts we need to configure and boot the VM
+
+    $ git clone https://github.com/laravel/homestead.git ~/Homestead
+
+-Now let us checkout the latest stable version which you can copy from the github page:
+
+    https://github.com/laravel/homestead/releases
+
+v10.1.0
+
+    $ cd ~/Homestead
+    $ git checkout v10.1.0
+
+-Now let us configure homstead where you can see these files:
+
+init.bat
+init.sh
+
+    $ sh init.sh
+    Homestead initialized!
+
+Now you will see:
+
+Homestead.yaml
+
+-Now let us view the file using
+
+    $ code Homestead.yaml
+
+-Open a terminal in Visual Studio Code using:
+
+    <CTRL> - `
+
+-Make a directory for nadiasgarden restaurant
+
+PS C:\Users\msull> mkdir nadias
+
+-We are doing this now so that we can tell vagrant to sync the files in this directory with a directory inside the VM
+-This lets us edit the code inside the host machine and run that code inside the guest VM
+-See Homestead.yaml and edit:
+
+folders:
+    - map: ~/code
+      to: /home/vagrant/code
+
+To:
+
+folders:
+    - map: ~/nadias
+      to: /home/vagrant/code
+
+-Let us edit the domain from:
+
+sites:
+    - map: homestead.test
+      to: /home/vagrant/code/public
+
+To:
+
+sites:
+    - map: dev.nadias
+      to: /home/vagrant/nadias/public
+
+-Change database name from:
+
+databases:
+    - homestead
+
+To:
+
+databases:
+    - nadias
+
+-Now we need to make sure that the domain name we chose is mapped to the local ip address for the box:
+
+ip: "192.168.10.10"
+
+We do this by editing our hosts file (on linux it is at /etc/hosts):
+
+C:\Windows\System32\drivers\etc\hosts
+
+Now add:
+
+192.168.10.10 dev.nadias
+
+-Back in the yaml file we will need to be able to connect to the machine using ssh
+
+keys:
+    - ~/.ssh/id_rsa
+
+-If you comment out the above section vagrant will create and manage the keys for you:
+
+#keys:
+#    - ~/.ssh/id_rsa
+
+-Now if we cd to ~/Homestead we are ready to boot the machine with:
+
+	D:\msys64>msys2_shell.cmd -use-full-path
+psalm@Grieg MSYS /d/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead
+$ vagrant up
+Bringing machine 'homestead' up with 'virtualbox' provider...
+==> homestead: Checking if box 'laravel/homestead' version '13.0.0' is up to date...
+==> homestead: Setting the name of the VM: homestead
+==> homestead: Clearing any previously set network interfaces...
+==> homestead: Preparing network interfaces based on configuration...
+    homestead: Adapter 1: nat
+    homestead: Adapter 2: hostonly
+==> homestead: Forwarding ports...
+    homestead: 80 (guest) => 8000 (host) (adapter 1)
+    homestead: 443 (guest) => 44300 (host) (adapter 1)
+    homestead: 22 (guest) => 2222 (host) (adapter 1)
+==> homestead: Running 'pre-boot' VM customizations...
+==> homestead: Booting VM...
+==> homestead: Waiting for machine to boot. This may take a few minutes...
+    homestead: SSH address: 127.0.0.1:2222
+    homestead: SSH username: vagrant
+    homestead: SSH auth method: private key
+    homestead:
+    homestead: Vagrant insecure key detected. Vagrant will automatically replace
+    homestead: this with a newly generated keypair for better security.
+    homestead:
+    homestead: Inserting generated public key within guest...
+    homestead: Removing insecure key from the guest if it`s present...
+    homestead: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> homestead: Machine booted and ready!
+==> homestead: Checking for guest additions in VM...
+    homestead: The guest additions on this VM do not match the installed version of
+    homestead: VirtualBox! In most cases this is fine, but in rare cases it can
+    homestead: prevent things such as shared folders from working properly. If you see
+    homestead: shared folder errors, please make sure the guest additions within the
+    homestead: virtual machine match the version of VirtualBox you have installed on
+    homestead: your host and reload your VM.
+    homestead:
+    homestead: Guest Additions Version: 6.1.40
+    homestead: VirtualBox Version: 7.0
+==> homestead: Setting hostname...
+==> homestead: Configuring and enabling network interfaces...
+==> homestead: Mounting shared folders...
+    homestead: /vagrant => D:/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead
+    homestead: /home/vagrant/nadias => D:/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead/nadias
+==> homestead: Detected mount owner ID within mount options. (uid: 1000 guestpath: /home/vagrant/nadias)
+==> homestead: Detected mount group ID within mount options. (gid: 1000 guestpath: /home/vagrant/nadias)
+==> homestead: Running provisioner: file...
+    homestead: D:/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead/aliases => /tmp/bash_aliases
+==> homestead: Running provisioner: handle_aliases (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: setting authorize key (shell)...
+    homestead: Running: inline script
+    homestead:
+    homestead: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCkxS9pRoLIO2bMP51HSVqvwp1maiFtxya55obNgKRrlczq31Z736mJKMxlfMv6VnrZaUBUqHg7APP6OYlS7nlmKbS2LHh0KBB7dn0b/UHzO5j84ZWAfRVcnRg+Y1UBPQ1/uU8TQig7o07zvof4QEQQzKTWzOwBp8vyctILWoX3OdItYrI5Cfu/qHJHYyD9b2JbEnH18Cs9aOybR4xKLTSyv3pwgoq5OP9GLbCntLRCT0n4FR9BnYTGh8BQmvnfhyXO3uW1TaZ3CWkN54dlJ53Q8q9EsMUiCcLO9ts0QCUlP0GhVNVo6OFbcu/Pk1jZdR0amg6G6SMILNp7QXPwxRazhWTqh4qVpglDf6ChzRJdBQYUq9ajw5Y0OcgIGBhf2XHc1/seWlkHZ5CvpOFEXJM38/rZa46Up9JpcjLwutI1d4QGZokteHAGHnV9eTq6YWCT1eZyWd3rOnCZe2jVPdllS/bOoy9A1HJKkS1Pra3umZG70wcMSB5P15fVN/7dcIk= psalm@Grieg
+    homestead:
+==> homestead: Running provisioner: setting authorize permissions for id_rsa (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: mk_features (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: own_features (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: apt_update (shell)...
+    homestead: Running: inline script
+    homestead: Get:1 https://deb.nodesource.com/node_18.x focal InRelease [4,583 B]
+    homestead: Get:2 https://download.docker.com/linux/ubuntu focal InRelease [57.7 kB]
+    homestead: Get:3 http://apt.postgresql.org/pub/repos/apt focal-pgdg InRelease [117 kB]
+    homestead: Hit:4 http://ppa.launchpad.net/chris-lea/redis-server/ubuntu focal InRelease
+    homestead: Get:5 https://deb.nodesource.com/node_18.x focal/main amd64 Packages [776 B]
+    homestead: Hit:6 http://us.archive.ubuntu.com/ubuntu focal InRelease
+    homestead: Get:7 http://us.archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+    homestead: Get:8 https://download.docker.com/linux/ubuntu focal/stable amd64 Packages [30.3 kB]
+    homestead: Get:9 http://ppa.launchpad.net/ondrej/php/ubuntu focal InRelease [23.9 kB]
+    homestead: Get:10 http://us.archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
+    homestead: Get:11 http://us.archive.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+    homestead: Get:12 http://apt.postgresql.org/pub/repos/apt focal-pgdg/main amd64 Packages [264 kB]
+    homestead: Get:13 http://us.archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2,570 kB]
+    homestead: Get:14 http://ppa.launchpad.net/ondrej/php/ubuntu focal/main amd64 Packages [115 kB]
+    homestead: Get:15 http://us.archive.ubuntu.com/ubuntu focal-updates/main Translation-en [434 kB]
+    homestead: Get:16 http://us.archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [1,879 kB]
+    homestead: Get:17 http://us.archive.ubuntu.com/ubuntu focal-updates/restricted Translation-en [264 kB]
+    homestead: Get:18 http://us.archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1,063 kB]
+    homestead: Get:19 http://us.archive.ubuntu.com/ubuntu focal-updates/universe Translation-en [253 kB]
+    homestead: Get:20 http://us.archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 Packages [25.2 kB]
+    homestead: Get:21 http://us.archive.ubuntu.com/ubuntu focal-backports/main amd64 Packages [45.7 kB]
+    homestead: Get:22 http://ppa.launchpad.net/ondrej/php/ubuntu focal/main Translation-en [37.5 kB]
+    homestead: Get:23 http://us.archive.ubuntu.com/ubuntu focal-backports/universe amd64 Packages [25.0 kB]
+    homestead: Get:24 http://us.archive.ubuntu.com/ubuntu focal-security/main amd64 Packages [2,192 kB]
+    homestead: Get:25 http://us.archive.ubuntu.com/ubuntu focal-security/main Translation-en [354 kB]
+    homestead: Get:26 http://us.archive.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [1,770 kB]
+    homestead: Get:27 http://us.archive.ubuntu.com/ubuntu focal-security/restricted Translation-en [249 kB]
+    homestead: Get:28 http://us.archive.ubuntu.com/ubuntu focal-security/universe amd64 Packages [839 kB]
+    homestead: Get:29 http://us.archive.ubuntu.com/ubuntu focal-security/universe Translation-en [172 kB]
+    homestead: Get:30 http://us.archive.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [22.9 kB]
+    homestead: Get:31 http://us.archive.ubuntu.com/ubuntu focal-security/multiverse Translation-en [5,488 B]
+    homestead: Fetched 13.1 MB in 5s (2,515 kB/s)
+    homestead: Reading package lists...
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Invalid feature: mysql
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: mariadb because it is set to false
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: postgresql because it is set to false
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: ohmyzsh because it is set to false
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+    homestead: Ignoring feature: webdriver because it is set to false
+==> homestead: Running provisioner: enable mysql (shell)...
+    homestead: Running: inline script
+    homestead: Synchronizing state of mysql.service with SysV service script with /lib/systemd/systemd-sysv-install.
+    homestead: Executing: /lib/systemd/systemd-sysv-install enable mysql
+==> homestead: Running provisioner: start mysql (shell)...
+    homestead: Running: inline script
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-k9vhod.sh
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-boap25.sh
+==> homestead: Running provisioner: Creating Certificate: dev.nadias (shell)...
+    homestead: Running: script: Creating Certificate: dev.nadias
+    homestead: Updating certificates in /etc/ssl/certs...
+    homestead: rehash: warning: skipping duplicate certificate in ca.homestead.homestead.pem
+    homestead: rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+    homestead: 1 added, 0 removed; done.
+    homestead: Running hooks in /etc/ca-certificates/update.d...
+    homestead: done.
+==> homestead: Running provisioner: Creating Site: dev.nadias (shell)...
+    homestead: Running: script: Creating Site: dev.nadias
+==> homestead: Running provisioner: shell...
+    homestead: Running: inline script
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-mxou.sh
+==> homestead: Running provisioner: Checking for old Schedule (shell)...
+    homestead: Running: script: Checking for old Schedule
+==> homestead: Running provisioner: Clear Variables (shell)...
+    homestead: Running: script: Clear Variables
+==> homestead: Running provisioner: Restarting Cron (shell)...
+    homestead: Running: script: Restarting Cron
+==> homestead: Running provisioner: Restart Webserver (shell)...
+    homestead: Running: script: Restart Webserver
+==> homestead: Running provisioner: Creating MySQL / MariaDB Database: nadias (shell)...
+    homestead: Running: script: Creating MySQL / MariaDB Database: nadias
+    homestead: We didn`t find MariaDB ($mariadb), skipping $DB creation
+==> homestead: Running provisioner: Update Composer (shell)...
+    homestead: Running: script: Update Composer
+    homestead: Upgrading to version 2.5.7 (stable channel).
+    homestead:
+    homestead: Use composer self-update --rollback to return to version 2.5.1
+==> homestead: Running provisioner: shell...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-dm2rvo.sh
+==> homestead: Running provisioner: Update motd (shell)...
+    homestead: Running: script: Update motd
+==> homestead: Running provisioner: Run after.sh (shell)...
+    homestead: Running: D:/Users/psalm/AppData/Local/Temp/vagrant-shell20230526-34180-wwrz0n.sh
+
+psalm@Grieg MSYS /d/Workspace/GResources/Courses/Lynda/BuildingLaravelVuejsWebApps/Homestead
+    $ vagrant ssh
+    Welcome to Ubuntu 18.04.3 LTS (GNU/Linux 4.15.0-72-generic x86_64)
+    ....
+
+--------------------------------------------------------------------------------
+    
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Scaffolding an authentication system:
+-Now inside the vm we can just do:
+
+    vagrant@homestead:/vagrant$ laravel new nadias --force
+    Crafting application...
+    Loading composer repositories with package information
+    Installing dependencies (including require-dev) from lock file
+        1/76:       https://codeload.github.com/sebastianbergmann/code-unit-reverse-lookup/legacy.zip/4419fcdb5eabb9caa61a27c7a1db532a6b55dd18
+    ...
+  - Installing spatie/laravel-ignition (2.1.3): Extracting archive
+	50 package suggestions were added by new dependencies, use `composer suggest` to see details.
+	Generating optimized autoload files
+	> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+	> @php artisan package:discover --ansi
+
+		INFO  Discovering packages.
+
+	laravel/sail ................................................................................................................................ DONE
+	laravel/sanctum ............................................................................................................................. DONE
+	laravel/tinker .......................  ....................................................................................................... DONE
+	nesbot/carbon ............................................................................................................................... DONE
+	nunomaduro/collision ........................................................................................................................ DONE
+	nunomaduro/termwind ......................................................................................................................... DONE
+	spatie/laravel-ignition ..................................................................................................................... DONE
+
+	81 packages you are using are looking for funding.
+	Use the `composer fund` command to find out more!
+	> @php artisan vendor:publish --tag=laravel-assets --ansi --force
+
+	INFO  No publishable resources for tag [laravel-assets].
+
+	No security vulnerability advisories found
+	> @php artisan key:generate --ansi
+
+	INFO  Application key set successfully.
+
+	INFO  Application ready! Build something amazing.
+
+vagrant@homestead:/vagrant$
+
+-Updated location to C:\Workspace\Resources\Courses\Lynda\BuildingLaravelVuejsWebApps\Homestead on old laptop	
+    
+-Now we should already be able to navigate to the dev.nadias and see the default laravel website
+
+    http://dev.nadias/
+
+-Now in Visual Studio Code choose File -> "Add Folder to Workspace" and choose "nadias"
+-Most of the code is under app but let`s take a look under routes where we will see ~\nadias\routes\web.php
+
+<?php
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+-This opens welcome.blade.php
+-Now to add a user authentication framework, inside vagrant just cd to ~/nadias and type "artisan make:auth" --> *** NOTE that this is the legacy method.  See steps below to add auth!
+
+-> NOTE: In laravel 6 you need INSTEAD to use these commands:
+
+    $ composer require laravel/ui --dev
+    ...
+    $ php artisan ui vue --auth
+
+
+    $ npm install
+   INFO  Authentication scaffolding generated successfully.
+
+   INFO  Vue scaffolding installed successfully.
+
+   WARN  Please run [npm install && npm run dev] to compile your fresh scaffolding.
+
+vagrant@homestead:/vagrant/nadias$ npm install
+npm WARN cleanup Failed to remove some directories [
+npm WARN cleanup   [
+npm WARN cleanup     '/vagrant/nadias/node_modules/@vue/compiler-dom',
+npm WARN cleanup     [Error: ETXTBSY: text file is busy, rmdir '/vagrant/nadias/node_modules/@vue/compiler-dom/dist'] {
+npm WARN cleanup       errno: -26,
+npm WARN cleanup       code: 'ETXTBSY',
+npm WARN cleanup       syscall: 'rmdir',
+npm WARN cleanup       path: '/vagrant/nadias/node_modules/@vue/compiler-dom/dist'
+npm WARN cleanup     }
+npm WARN cleanup   ],
+npm WARN cleanup   [
+npm WARN cleanup     '/vagrant/nadias/node_modules/@popperjs',
+npm WARN cleanup     [Error: ETXTBSY: text file is busy, rmdir '/vagrant/nadias/node_modules/@popperjs/core/dist/esm/modifiers'] {
+npm WARN cleanup       errno: -26,
+npm WARN cleanup       code: 'ETXTBSY',
+npm WARN cleanup       syscall: 'rmdir',
+npm WARN cleanup       path: '/vagrant/nadias/node_modules/@popperjs/core/dist/esm/modifiers'
+npm WARN cleanup     }
+npm WARN cleanup   ]
+npm WARN cleanup ]
+npm notice
+npm notice New minor version of npm available! 9.3.0 -> 9.6.7
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v9.6.7
+npm notice Run npm install -g npm@9.6.7 to update!
+npm notice
+npm ERR! code EPROTO
+npm ERR! syscall symlink
+npm ERR! path ../@babel/parser/bin/babel-parser.js
+npm ERR! dest /vagrant/nadias/node_modules/.bin/parser
+npm ERR! errno -71
+npm ERR! EPROTO: protocol error, symlink '../@babel/parser/bin/babel-parser.js' -> '/vagrant/nadias/node_modules/.bin/parser'
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/vagrant/.npm/_logs/2023-05-28T00_14_01_661Z-debug-0.log	
+	
+-> Solution: First ran "npm install" from the Windows host in msys64, then executed "npm install && npm run dev" on the Ubuntu VM	(see https://stackoverflow.com/questions/56729305/npm-err-eproto-protocol-error-symlink-babel-parser-bin-babel-parser-js)
+	
+    $ npm run dev
+
+-Which should then show:
+
+  VITE v4.3.9  ready in 4596 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h to show help
+
+--------------------------------------------------------------------------------
+node:internal/errors:490
+    ErrorCaptureStackTrace(err);
+    ^
+
+Error: ENOSPC: System limit for number of file watchers reached, watch '/vagrant/nadias/vendor/phpunit/phpunit/src/Event/Events/TestRunner/Started.php'
+    at FSWatcher.<computed> (node:internal/fs/watchers:247:19)
+    at Object.watch (node:fs:2343:34)
+    at createFsWatchInstance (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50470:17)
+    at setFsWatchListener (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50517:15)
+    at NodeFsHandler._watchWithNodeFs (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50672:14)
+    at NodeFsHandler._handleFile (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50736:23)
+    at NodeFsHandler._addToNodeFs (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50978:21)
+Emitted 'error' event on FSWatcher instance at:
+    at FSWatcher._handleError (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:52169:10)
+    at NodeFsHandler._addToNodeFs (file:///vagrant/nadias/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:50986:18) {
+  errno: -28,
+  syscall: 'watch',
+  code: 'ENOSPC',
+  path: '/vagrant/nadias/vendor/phpunit/phpunit/src/Event/Events/TestRunner/Started.php',
+  filename: '/vagrant/nadias/vendor/phpunit/phpunit/src/Event/Events/TestRunner/Started.php'
+
+-> Solution: See https://stackoverflow.com/questions/55763428/react-native-error-enospc-system-limit-for-number-of-file-watchers-reached
+
+The meaning of this error is that the number of files monitored by the system has reached the limit!!
+
+Result: The command executed failed! Or throw a warning (such as executing a react-native start VSCode)
+
+Solution:
+
+Modify the number of system monitoring files
+
+Ubuntu
+
+sudo gedit /etc/sysctl.conf
+
+Add a line at the bottom
+
+fs.inotify.max_user_watches=524288
+
+Then save and exit!
+
+sudo sysctl -p
+
+to check it
+
+Then it is solved!        
+        
+--------------------------------------------------------------------------------
+  
+-Now that we have installed auth we can now see this has been aded to web.php:
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+-We also have new views under:
+
+~resources\views\auth
+
+-Now refresh the homepage at http://dev.nadias/ and click "Register" in the top RHS, and fill out the form:
+
+Roger
+rmoore@example.com
+nadias123
+
+And click Register
+
+-We will get an error because we still don`t have a users table in our database, and it is still using Homestead for the database name so we want instead for it to use nadias so let`s fix that
+
+Illuminate\Database\QueryException
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'nadias.users' doesn`t exist (SQL: select count(*) as aggregate from `users` where `email` = roger@example.com)
+http://dev.nadias/register
+
+-Under config in database.php it is checking DB_DATABASE to find the database and then using forge if it can`t find the database
+
+        'mysql' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+-The above is using the environment variable DB_DATABASE to get the database name and using forge if it can`t find the environment variable
+-Let us change it in our .env file
+
+APP_NAME="Nadia's Garden Restaurant"
+APP_URL=http://dev.nadias
+DB_DATABASE=nadias
+
+-Now add admin column to users table in the migration:
+
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->boolean('is_admin')->default(false);
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+-Now run migration using:
+
+    vagrant@homestead:~/nadias$ ./artisan migrate
+
+-Now go back and try to create a user again
+-We should be able to login and logout at this point
+-In the next video we will talk about email verification and forgotten passwords
+
+--------------------------------------------------------------------------------
+        
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Enabling forgotten password and email verification:
+-If I pick "Forgot Your Password?" and hit submit I`m going to get an error because the default SMTP user doesn`t have a password:
+
+Swift_TransportException
+Expected response code 250 but got code "530", with message "530 5.7.1 Authentication required "
+
+-In the .env file if we change MAIL_DRIVER from smtp to log we will log emails instead of trying to send them:
+
+MAIL_DRIVER=smtp
+
+To:
+
+MAIL_DRIVER=log
+
+-The logs are located in ~\storage\logs
+
+-Users will be required to click an email verification link upon registration
+-In user.php we need to add the MustVerifyEmail interface:
+
+class User extends Authenticatable implements MustVerifyEmail
+
+-The above will trigger the verification logic on registration and email a link to the user
+-Now in our web.php we need to add some routes for sending and verifying registration links
+-We do this by passing an options array to routes:
+
+Auth::routes(['verify' => true]);
+
+-If we want to restrict access to the website to only allow users that have verified their emails, added verified at the end here:
+
+Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+
+-If you go to mailtrap.io then you can sign up for an account that can hold up to 50 emails for free without needing a credit card
+-At mailtrap.io go to the demo inbox to find the username and password you can add to our laravel .env file (I signed up to mailtraip using GitHub credentials / john_1726@yahoo.com:
+
+Username:	d27f58e52ab04e
+Password:	13fba7772cbe57
+
+MAIL_HOST=smtp.mailtrap.io
+MAIL_USERNAME=d27f58e52ab04e
+MAIL_PASSWORD=13fba7772cbe57
+
+-Also change mail driver back to smtp:
+
+MAIL_DRIVER=smtp
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Using webpack with Laravel Mix: -> But see ViteHasReplacedWebpackWithLaravelMix.pdf
+-See ~\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch1\01_05\begin
+-To compile and bundle such as javascript files, and CSS and SASS files, in our ~\resources\views\layouts\app.blade.php, we see these assets:
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+-That asset helper returns an absolute URL with HTTP or HTTPS
+-Those files are in ~\public\js and ~\public\css
+-Those files are recreated whenever the resources files change, such as:
+
+    ~\resources\js\app.js
+    ~\resources\sass\app.css
+
+-Let`s look at this file:    
+    ~\resources\js\app.js    
+
+/**
+ * First we will load all of this project`s JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
+
+require('./bootstrap');
+
+window.Vue = require('vue');
+
+/**
+ * The following block of code may be used to automatically register your
+ * Vue components. It will recursively scan this directory for the Vue
+ * components and automatically register them with their "basename".
+ *
+ * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
+ */
+
+// const files = require.context('./', true, /\.vue$/i)
+// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
+
+const app = new Vue({
+    el: '#app',
+});
+
+-Notice that this loads bootstrap.js which in turn loads a number of utilities like loaddash, jquery and axios
+-This line registers view to the global scope:
+
+window.Vue = require('vue');
+
+-It also registers a global component:
+
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+-This mounts our root Vue instances to a div with the id app which is in the layout file we just looked at:
+
+const app = new Vue({
+    el: '#app',
+});
+
+-Vue may be complicated but configuring it with laravel is simple
+-Notice in webpack.mix.js there is a source (resources) and target (public) directory (notice taht with the latest laravel Vite is used instead so see "vite.config.js"):
+
+mix.js('resources/js/app.js', 'public/js')
+   .sass('resources/sass/app.scss', 'public/css');
+
+-Let us try putting ExampleComponent.vue on a page and then changing it
+-Let us first install the Vetur extension in Visual Studio Code
+-In home.blade.php let us add it:
+
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Dashboard</div>
+
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    You are logged in!
+                </div>
+                <example-component></example-component>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+-Now in ExampleComponent.vue let us add the text "edited" and do a refresh:
+
+<template>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Example Component</div>
+
+                    <div class="card-body">
+                        I`m an example component - edited.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        mounted() {
+            console.log('Component mounted.')
+        }
+    }
+</script>
+
+-If we do a refresh we don`t see the "edited" text added because webpack is not even running yet
+-The browser doesn`t read .vue files on its own
+-Before we can get webpack running we need to install some front-end dependencies.  We usually want npm to do that on our host machine.
+-Now on the host do an install (open a terminal in Visual Studio Code by typing <CTRL>-<SHIFT>-`):
+
+PS ~Lynda\BuildingLaravelVueJsWebApps\nadias> npm install
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.11 (node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.11: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+
+added 1040 packages from 491 contributors and audited 17228 packages in 61.637s
+
+29 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+PS ~Lynda\BuildingLaravelVueJsWebApps\nadias> npm run watch-poll
+
+-Now go back to web page and type <CTRL>-F5 to do a hard refresh
+-So you should now see on the home page:
+
+I`m an example component - edited.
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 1: Installation and Configuration: Cache busting and Browsersync:
+-> ALERNATIVE SOLUTION to cache busting: Disable cache in Browser -> "Web developer tools" -> "Network" tab
+                                                                                               -See ~\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch1\01_06\begin\nadias
+-Often times when you reload a webpage it will retrieve the value in the cache.  One way to prevent this issue is to add a query string with a unique hash to the file name.
+-We can accomplish this by adding a call to the version in our webpack.mix.js file 
+
+mix.js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')
+    .version();
+
+-In our app.blade.php layout file remember that asset just creates an absolute URL so we will have to change asset to mix:
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+To:
+
+    <!-- Scripts -->
+    <script src="{{ mix('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">    
+
+-Now stop the running npm watch process with CTRL-C:
+
+    ch job (Y/N)? y
+    PS C:\Users\msull\nadias
+
+And then restart it:
+
+    PS C:\Users\msull\nadias> npm run watch
+
+-Now you will see the changes immediately if you do a refresh and you will also see the hash if you view the source:
+
+    <!-- Scripts -->
+    <script src="/js/app.js?id=61fcbbd9446cf7c8619c" defer></script>
+
+-Let us test a change a change to our sass file now--open ~\resources\js\sass\app.scss and change it to yellow:
+
+.navbar-laravel {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+To:
+
+.navbar-laravel {
+    background-color: $yellow;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+-> $yellow is defined in the variables file _variables.scss
+
+-Cache busting is important during production but we don`t really need it in development if we can perform a full page refresh whenever a page changes
+-We can do that:
+
+webpack.mix.js:
+
+mix.js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css');
+
+if (mix.inProduction()) {
+    mix.version();
+}
+
+mix.browserSync('dev.nadias');
+
+-Now when I stop and restart "npm run watch" you will see it will load the site on localhost:
+
+http://localhost:3000
+
+-Now we have VS Code auto-saving, then webpack.mix.js auto-compiling, and then browser auto-refreshing
+-Webpack also has a feature called hot module replacement that that can inject updated modules without a full page refresh; see package.json:
+
+"hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+
+-Thus you can disable browser sync and type "npm run hot" instead; it is a great feature but the instructor says he has found it can be a bit harder to get working especially where there are more moving parts like in this Laravel project where mix is running on top of webpack
+-The other great thing about browser sync is that it will refresh after php changes as well
+-So now go to either http://dev.nadias or http://localhost:3000 and then open welcome.blade.php and change:
+
+<title>Laravel</title>
+
+To:
+
+<title>Nadia`s Garden Restaurant</title>
+
+-Then if you go back to the main page you will see that it has already refreshed
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Integrating a Layout:
+-Let us change the web.php routes file:
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+To:
+
+Route::get('/', function () {
+    return view('home');
+});
+
+-Now add this folder to the Visual Studio Code workspace:
+
+~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html
+
+-Let us open ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_01\begin\nadias_html\index.html and copy the title:
+
+Nadia`s Garden Restaurant
+
+And open app.blade.php and replace:
+
+<title>{{ config('app.name', 'Laravel') }}</title>    
+
+with:
+
+<title>{{ config('app.name', "Nadia`s Garden Restaurant") }}@yield('title')</title>    
+
+Let us also remove these font elements from the Laravel layout:
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+And add our fav icon:
+
+<link rel="icon" href="/images/favicon.ico">
+
+Now in our index.html let us copy the URL for this font:
+
+http://fonts.googleapis.com/css?family=Old+Standard+TT%3A400%2C400italic%2C700%7CMontserrat%3A400%2C700&#038;ver=1.0.0
+
+To:
+
+@import url('http://fonts.googleapis.com/css?family=Old+Standard+TT%3A400%2C400italic%2C700%7CMontserrat%3A400%2C700&#038;ver=1.0.0');
+
+And remove:
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.navbar-laravel {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+-The instructor is going to leave this yield because it is what is going to allow our content pages to extend this layout:
+
+@yield('content')
+
+-Now let us grab those authentication links and integrate them into the existing nadia`s nav bar
+...
+
+-Now if we check the browser we see our branded homepage we we can start adding some dynamic behaviour to it over the next few videos
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Creating a model and seeding the database:
+-Now let us change the app so that the category names and image file names are pulled from the database
+-Go to the nadias shell inside Visual Studio code
+
+$ artisan make:model Category -mr
+
+Full command:
+
+roger@MSI MINGW64 /c/Workspace/Resources/Courses/Lynda/BuildingLaravelVueJsWebApps/Homestead ((c6a5fdf...))
+$ vagrant ssh
+Welcome to Ubuntu 18.04.3 LTS (GNU/Linux 4.15.0-74-generic x86_64)
+
+
+1 package can be updated.
+0 updates are security updates.
+
+
+Last login: Thu Jan 23 17:53:45 2020 from 10.0.2.2
+vagrant@homestead:~$ cd nadias
+vagrant@homestead:~/nadias$ ./artisan make:model Category -mr
+Model created successfully.
+Created Migration: 2020_01_23_175454_create_categories_table
+
+-Now in the app folder we should have a Category.php file and a CategoryController.php
+-Also there will be a new migrations file in database/migrations
+
+-Let us add 'name' and 'image' columns to Category
+-Also let us add unsignedTinyInteger('display_order')
+
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateCategoriesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('image');
+            $table->unsignedTinyInteger('display_order');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('categories');
+    }
+}
+
+-Now run artisan migrate and seeder:
+
+vagrant@homestead:~/nadias$ ./artisan migrate
+...
+
+vagrant@homestead:~/nadias$ ./artisan make:seeder CategoriesTableSeeder
+
+-Which will create:
+
+<?php
+
+use Illuminate\Database\Seeder;
+
+class CategoriesTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('categories')->insert([
+            [
+                'name' => 'Starters',
+                'image' => 'mushrooms.jpg',
+                'display_order' => 1
+            ],
+            [
+                'name' => 'Salads',
+                'image' => 'salad.jpg',
+                'display_order' => 2
+            ],
+            [
+                'name' => 'Entrees',
+                'image' => 'burger.jpg',
+                'display_order' => 3
+            ],
+        ]);
+    }
+}
+
+-We will insert the desert category using our admin tool later
+-Now run the seeder:
+
+vagrant@homestead:~/nadias$ ./artisan db:seed
+
+-BTW you might need to run this first for it to resolve the Categories table if you get this error:
+
+   Illuminate\Contracts\Container\BindingResolutionException  : Target class [CategoriesTableSeeder] does not exist.
+
+vagrant@homestead:~/nadias$ composer dump-autoload
+
+-Now we can verify everything worked in MySQL:
+
+vagrant@homestead:~/nadias$ mysql nadias
+
+mysql> select * from categories;
++----+----------+---------------+---------------+------------+------------+
+| id | name     | image         | display_order | created_at | updated_at |
++----+----------+---------------+---------------+------------+------------+
+|  1 | Starters | mushrooms.jpg |             1 | NULL       | NULL       |
+|  2 | Salads   | salad.jpg     |             2 | NULL       | NULL       |
+|  3 | Entrees  | burger.jpg    |             3 | NULL       | NULL       |
++----+----------+---------------+---------------+------------+------------+
+3 rows in set (0.00 sec)
+
+mysql>
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building views with Blade templates:
+-Now let us remove the should route here from web.php and we will want to use the home controller method
+
+Route::get('/', function () {
+    return view('home');
+});
+
+Also change:
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+To slash to serve right on the bare domain:
+
+Route::get('/', 'HomeController@index')->name('home');
+
+-Also remove the verified since we don`t care if viewers checking the home page are even verified
+-Remember to do a ctrl-shift-h to find and replace all '/home' with '/'
+-Now in HomeController remove the 'auth' middleware
+
+$this->middleware('auth');
+
+-Now in the index method let us grab all the categories:
+
+    public function index()
+    {
+        $categories = Category::orderBy('display_order')->get();
+        return view('home', compact('categories'));
+    }
+
+-Now let us go over to the home.blade.php view so that the categories are dynamic
+-Remove this:
+
+    <article>
+        <a href="#"><img src="/images/mushrooms.jpg"></a>
+        <h2><a href="#">Starters</a></h2>
+    </article>                
+    <article>
+        <a href="#"><img src="/images/salad.jpg"></a>
+        <h2><a href="#">Salads</a></h2>
+    </article>                
+    <article>
+        <a href="#"><img src="/images/burger.jpg"></a>
+        <h2><a href="#">Entrees</a></h2>
+    </article>                
+    <article>
+        <a href="#"><img src="/images/brownie.jpg"></a>
+        <h2><a href="#">Desserts</a></h2>
+    </article>
+
+-And replace with:
+
+    @foreach ($categories as $cat)
+        <article>
+            <a href="/menu#{{str_slug($cat->name)}}"><img src="/images/{{$cat->image}}"></a>
+            <h2><a href="/menu#{{str_slug($cat->name)}}">{{$cat->name}}</a></h2>
+        </article>   
+    @endforeach
+
+-str_slug changes spaces to hyphens, etc
+-Also add use for Category
+-There is an extension to help with this (CTRL-SHIF-X to open extensions in VS Code) and search for:
+
+    PHP Intelliphense
+
+-This will add use declaration if you type "Category":
+
+use App\Category;
+
+-Also do CTRL-, to edit the settings for PHP to disable basic suggestions so they don`t interfere
+->Uncheck "PHP Suggest:Basic"
+-Now we have our homepage with three of the four categories but loaded from the database
+-Note that str_slug is part of String and Array helpers which have been removed from the Core Framework in Laravel 6 so execute this command to add them:
+
+vagrant@homestead:~/nadias$ composer require laravel/helpers
+
+-Next we will start building the admin UI for updating the dishes
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Injecting props in Vue components:
+-Add this to CategoryController.php:
+
+    public function index()
+    {
+        $categories = Category::orderBy('display_order')->get();
+        return view('admin.categories.index', [
+			'categories' => $categories
+		]);
+    }
+
+-Also add ~/resources/views/admin/categories/index.php.  The inject $categories below automatically JSON encodes categories to avoid any syntax issues.  It doesn`t get much easier for passing an array from PHP to JavaScript:
+
+@extends('layouts.app')
+
+@section('title', ' - Categories')
+
+@section('content')
+    <h1>Categories</h1>
+    <category-manager :categories="{{ $categories }}"></category-manager>
+@endsection
+
+-Also let us add a route for Categories in web.php:
+
+Route::get('/categories', 'CategoryController@index');
+
+-Also add the "Auto Close Tag" VS Code extension
+-Now in ~resources/js/components let us create CategoryManager.vue:
+
+<template>
+    <div>
+        <div v-for="category in categories" :key="category.id">
+            {{ category.name }}
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        props: ['categories']
+    }
+</script>
+
+-Where does this categories array come from?  props
+-But first in app.js let us change the component to category manager:
+
+From:
+
+Vue.component('example-component', require('./components/ExampleComponent.vue'));
+
+To:
+
+Vue.component('category-manager', require('./components/CategoryManager.vue'));
+
+-Make sure web-pack is still running in the terminal:
+
+       Asset      Size   Chunks             Chunk Names
+/css/app.css  4.51 KiB  /js/app  [emitted]  /js/app
+ + 1 hidden asset
+[Browsersync] File event [change] : public\css\app.css
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building a CRUD component:
+-Now let us change CategoryManager.vue into a form for managing the categories component
+-It is a bad idea to mutate properties because they can be overwritten by a parent call at any time
+-It is better to do a deep clone to recursively clone each element in the array
+-Let us give it its own data component:
+
+<script>
+    export default {
+        props: ['initialCategories'],
+        data() {
+            return {
+                categories: _.cloneDeep(this.initialCategories)
+            };
+        },
+        methods: {
+            removeCategory(index) {
+                if (confirm('Are you sure?')) {
+                    this.categories.splice(index, 1);
+                }
+            }
+        }
+    }
+</script>
+
+-Now let us update the template:
+
+<template>
+    <form>
+        <div v-for="(category, index) in categories" :key="category.id">
+            <input type="text" v-model="category.name">
+            <input type="number" v-model="category.display_order">
+            <a @click="removeCategory(index)" class="remove">delete</a>
+            <div>
+                <img :src="`/images/${category.image}`" width="100">
+                <input type="text" v-model="category.image">
+            </div>
+            <hr> <!-- horizontal rule to separate categories -->
+        </div>
+    </form>
+</template>
+
+<script>
+    export default {
+        props: ['initialCategories'],
+        data() {
+            return {
+                categories: _.cloneDeep(this.initialCategories)
+            };
+        },
+        methods: {
+            removeCategory(index) {
+                if (confirm('Are you sure?')) {
+                    this.categories.splice(index, 1);
+                }
+            }
+        }
+    }
+</script>
+
+<style scoped> <!-- The scoped keyword ensure that these attributes only apply to this view -->
+    hr {
+        margin-bottom: 30px;
+    }
+    img {
+        vertical-align: middle;
+    }
+</style>
+
+
+-Also update ~resources\views\admin\categories\index.blade.php
+
+
+@extends('layouts.app')
+
+@section('title', ' - Categories')
+
+@section('content')
+    <h1>Categories</h1>
+    <category-manager :initial-categories="{{ $categories }}"></category-manager>
+@endsection
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Managing scrolling and focus:
+~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_06\begin\nadias_html
+-Now let us make sure that we have a way to add a category now
+
+<template>
+    <form>    
+        <a @click="addCategory" class="add">+ Add Category</a>    
+        <div v-for="(category, index) in categories" :key="category.id">
+            <input type="text" v-model="category.name" :ref="category.name">
+            <input type="number" v-model="category.display_order">
+            <a @click="removeCategory(index)" class="remove">delete</a>
+            <div>
+                <img v-if="category.image" :src="`/images/${category.image}`" width="100">
+                <label v-else>Image: </label>
+                <input type="text" v-model.lazy="category.image">
+            </div>
+            <hr>
+        </div>
+    </form>
+</template>
+
+<script>
+    export default {
+        props: ['initialCategories'],
+        data() {
+            return {
+                categories: _.cloneDeep(this.initialCategories)
+            };
+        },
+        methods: {
+            removeCategory(index) {
+                if (confirm('Are you sure?')) {
+                    this.categories.splice(index, 1);
+                }
+            },
+            addCategory() {
+                this.categories.push({
+                    id: 0,
+                    name: '',
+                    image: '',
+                    display_order: this.categories.length + 1
+                });
+                this.$nextTick(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                    this.$refs[''][0].focus();
+                });
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    hr {
+        margin-bottom: 30px;
+    }
+    img {
+        vertical-align: middle;
+    }
+</style>
+
+-So we have added "addCategory" link at the top
+-Down in methods we have to just push a placeholder object onto the array:
+
+            addCategory() {
+                this.categories.push({
+                    id: 0,
+                    name: '',
+                    image: '',
+                    display_order: this.categories.length + 1
+                });
+            }
+
+-Let us only display the image if the category image tag is not empty:
+
+                <img v-if="category.image" :src="`/images/${category.image}`" width="100">
+
+It would be nice if we could automatically scroll to the bottom and put the cursor onto the name field.  We want to give the DOM time to update and draw the new div so we wrap it in a $nextTick:
+
+                this.$nextTick(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                    this.$refs[''][0].focus();
+                });
+
+                
+-We are getting the textbox with an empty string using:
+
+                    this.$refs[''][0].focus();
+
+-To ensure that the image doesn`t blink while typing we add lazy:
+
+                <input type="text" v-model.lazy="category.image">
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Protecting routes and models with policies:
+-See ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_07\begin\nadias_html
+-For permissions that need to be beyond simply authentication we can create what is known in Laravel as policies:
+
+vagrant@homestead:~/nadias$ ./artisan make:policy CategoryPolicy --model=Category
+Policy created successfully.
+
+-Now let us open and update CategoryPolicy.php
+
+<?php
+
+namespace App\Policies;
+
+use App\User;
+use App\Category;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class CategoryPolicy
+{
+    use HandlesAuthorization;
+
+    public function before($user, $ability)
+    {
+        if ($user->is_admin) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can manage categories.
+     *
+     * @param  \App\User  $user     
+     * @return mixed
+     */
+    public function manage(User $user)
+    {
+        
+    }
+
+    /**
+     * Determine whether the user can create categories.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function create(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can update the category.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Category  $category
+     * @return mixed
+     */
+    public function update(User $user, Category $category)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can delete the category.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Category  $category
+     * @return mixed
+     */
+    public function delete(User $user, Category $category)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can restore the category.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Category  $category
+     * @return mixed
+     */
+    public function restore(User $user, Category $category)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the category.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Category  $category
+     * @return mixed
+     */
+    public function forceDelete(User $user, Category $category)
+    {
+        //
+    }
+}
+
+-All we care about now is if a user is an admin
+
+        if ($user->is_admin) {
+            return true;
+        }
+
+
+-Before we can use this policy we need to register it in AuthServiceProvider.php:
+
+    protected $policies = [
+        'App\Model' => 'App\Policies\ModelPolicy',
+        'App\Category' => 'App\Policies\CategoryPolicy'
+    ];
+
+-Now let us see if we can prevent a user from accessing our category page until we make them an admin
+-In CategoryController.php add authorize:
+
+    public function index()
+    {
+        $this->authorize('manage', 'App\Category');
+        $categories = Category::orderBy('display_order')->get();
+        return view('admin.categories.index', [
+			'categories' => $categories
+		]);
+    }
+
+-Let us make our user an admin by using artisan tinker:
+
+vagrant@homestead:~/nadias$ ./artisan tinker
+Psy Shell v0.9.12 (PHP 7.4.1 — cli) by Justin Hileman
+>>> $user = User::find(2);
+[!] Aliasing 'User' to 'App\User' for this Tinker session.
+=> App\User {#3037
+     id: 2,
+     name: "Roger",
+     email: "rmoore@example.com",
+     email_verified_at: "2020-01-14 18:09:43",
+     is_admin: 0,
+     created_at: "2020-01-14 18:08:46",
+     updated_at: "2020-01-14 18:09:43",
+   }
+>>> $user->is_admin = true;
+=> true
+>>> $user->save();
+=> true
+>>>
+
+--------------------------------------------------------------------------------
+                                                                                                             
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Building an API with Laravel Passport:
+-See ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_07\begin\nadias_html
+-For actions that will invoke AJAX we could put the routes in web.php and rely on the same cookie-based sessions for authentication but it is nice to keep them in the api.php file that is in the same routes folder
+-This api guard uses token authentication:
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+-We can setup a complete API using Laravel passport:
+
+vagrant@homestead:~/nadias$ composer require laravel/passport
+...
+
+-Passport comes with migrations although they won`t be placed in the normal migrations folder
+-Now run artisan migrate to store the tokens for the API access
+
+vagrant@homestead:~/nadias$ ./artisan migrate
+Migrating: 2016_06_01_000001_create_oauth_auth_codes_table
+Migrated:  2016_06_01_000001_create_oauth_auth_codes_table (0.18 seconds)
+Migrating: 2016_06_01_000002_create_oauth_access_tokens_table
+Migrated:  2016_06_01_000002_create_oauth_access_tokens_table (0.2 seconds)
+Migrating: 2016_06_01_000003_create_oauth_refresh_tokens_table
+Migrated:  2016_06_01_000003_create_oauth_refresh_tokens_table (0.22 seconds)
+Migrating: 2016_06_01_000004_create_oauth_clients_table
+Migrated:  2016_06_01_000004_create_oauth_clients_table (0.11 seconds)
+Migrating: 2016_06_01_000005_create_oauth_personal_access_clients_table
+Migrated:  2016_06_01_000005_create_oauth_personal_access_clients_table (0.12 seconds)
+
+-To get everything else we need use:
+
+vagrant@homestead:~/nadias$ ./artisan passport:install
+
+-Next in our User.php model we will need to add the HasApiTokens along with associated use declaration:
+
+    use Notifiable, HasApiTokens;
+
+-Now we need to add a fresh API token class which can can do in http\Kernel by adding "\Laravel\Passport\Http\Middleware\CreateFreshApiToken::class":
+
+    protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class
+        ],
+
+-Now we need to change the driver for the API guard in auth.php:
+
+Change from:
+
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+
+To:
+
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+
+-Now in api.php let us change to a route for storing our categories:
+
+Route::post('/categories/upsert', 'CategoryController@upsert');
+
+Also add 'auth:api' to Kernel.php:
+
+        'api' => [
+            'throttle:60,1',
+            'bindings',
+            'auth:api'
+        ],
+
+-Now let us go to the category controller:
+
+
+    public function upsert()
+    {
+        $this->authorize('manage', 'App\Category');
+        return ['success' => true];
+    }
+
+-Now let us test this in CategoryManager.vue:
+
+        created() {
+            axios.post('/api/categories/upsert');
+        },
+
+-Now do a page refresh, open the developer tools in the browser and go to the Network tab and open the XRT sub-tab to view the AJAX calls.  You should see:
+
+Name    Status  Type  Initiator
+upsert  200     xhr   app.js:285
+
+The response body should be:
+
+{"success":true}
+
+-----
+        
+-Note that I am getting this error:
+
+[Vue warn]: Failed to mount component: template or render function not defined.
+
+found in
+
+---> <CategoryManager>
+       <Root>
+
+-> Solution: Had to change in app.js:
+
+Vue.component('category-manager', require('./components/CategoryManager.vue'));
+
+To:
+
+Vue.component('category-manager', require('./components/CategoryManager.vue').default);
+
+-----
+
+-Next we will add a button to save categories and build out our upsert method in our controller so that we will have a full working category manager
+
+--------------------------------------------------------------------------------
+        
+Building Laravel and Vue.js Web Apps: Module 2: MV* Architectures: Calling an API from Vue:
+-See ~Lynda\BuildingLaravelVueJsWebApps\DemosLaravelVueJS\Ch2\02_09\begin\nadias_html
+-First let us inject the incoming request:
+
+    public function upsert(Request $request)
+    {
+        $this->authorize('manage', 'App\Category');
+        $categories = $request->post('categories');
+        foreach ($categories as $cat) {
+            if ($cat['id']) {
+                Category::where('id', $cat['id'])->update($cat);
+            }
+            else {
+                Category::create($cat);
+            }
+        }
+        return ['success' => true, 'categories' => Category::all()];
+    }
+
+    
+-We will talk more about validation later
+-Let us add this to the Category model:
+
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    protected $guarded = [];
+}
+
+-Now let us go back to CategoryManager.vue:
+
+<template>
+    <form @submit.prevent="saveCategories">    
+        <a @click="addCategory" class="add">+ Add Category</a>    
+        <div v-for="(category, index) in categories" :key="category.id">
+            <input type="text" v-model="category.name" :ref="category.name">
+            <input type="number" v-model="category.display_order">
+            <a @click="removeCategory(index)" class="remove">delete</a>
+            <div>
+                <img v-if="category.image" :src="`/images/${category.image}`" width="100">
+                <label v-else>Image: </label>
+                <input type="text" v-model.lazy="category.image">
+            </div>
+            <hr>
+        </div>
+        <button type="submit">Save</button>
+        <div>{{ feedback }}</div>
+    </form>
+</template>
+
+<script>
+    export default {
+        props: ['initialCategories'],
+        data() {
+            return {
+                categories: _.cloneDeep(this.initialCategories),
+                feedback: ''
+            };
+        },
+        methods: {
+            removeCategory(index) {
+                if (confirm('Are you sure?')) {
+                    let id = this.categories[index].id;
+                    if (id > 0) {
+                        axios.delete('/api/categories/' + id);
+                    }
+                    this.categories.splice(index, 1);
+                }
+            },
+            addCategory() {
+                this.categories.push({
+                    id: 0,
+                    name: '',
+                    image: '',
+                    display_order: this.categories.length + 1
+                });
+                this.$nextTick(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                    this.$refs[''][0].focus();
+                });
+            },
+            saveCategories() {
+                axios.post('/api/categories/upsert', {
+                    categories: this.categories
+                })
+                .then((res) => {
+                    if (res.data.success) {
+                        this.feedback = 'Changes saved.';
+                        this.categories = res.data.categories;
+                    }
+                });
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    hr {
+        margin-bottom: 30px;
+    }
+    img {
+        vertical-align: middle;
+    }
+</style>
+
+-Now let us test this by adding the desserts category for real
+
+Desserts
+brownie.jpg
+
+-Let us also get delete working and then we will be done
+
+Route::delete('/categories/{category}', 'CategoryController@destroy');
+
+    public function destroy(Category $category)
+    {
+        $this->authorize('delete', $category);
+        $category->delete();
+        return ['success' => true];
+    }
+
+
+Now in CategoryManager.vue let us finish removeCategory:
+
+        methods: {
+            removeCategory(index) {
+                if (confirm('Are you sure?')) {
+                    let id = this.categories[index].id;
+                    if (id > 0) {
+                        axios.delete('/api/categories/' + id);
+                    }
+                    this.categories.splice(index, 1);
+                }
+            },
+
+--------------------------------------------------------------------------------
+            
+Building Laravel and Vue.js Web Apps: Module 3: Building an Embedded SPA: Protecting admin pages with gates:

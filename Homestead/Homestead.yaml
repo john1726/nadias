@@ -1,5 +1,5 @@
 ---
-ip: "192.168.56.56"
+ip: "192.168.56.211"
 memory: 8192
 cpus: 4
 provider: virtualbox
